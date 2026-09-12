@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Publications | Administration</title>
+    <link rel="icon" href="../assets/favicon.jpg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{colors:{institution:"#075ea8",navy:"#12324a",gold:"#f3b51b",ink:"#111827",mist:"#eef6fb"},boxShadow:{soft:"0 16px 45px rgba(18, 50, 74, 0.12)"}}}};</script>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body class="bg-white text-ink protected-page" data-page="admin" data-admin-module="blog" data-root="..">
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur" data-site-header></header>
+    <main id="main" class="dashboard-shell admin-app">
+      <section class="admin-command-bar"><div><p class="eyebrow">Module</p><h1>Publications</h1><!-- Note dev: module publications avec couverture obligatoire et galerie liée, 20 images maximum. --></div></section>
+      <section class="admin-workspace">
+        <aside class="admin-nav-panel"><div class="admin-user-chip"><span class="status-pill success">SuperAdmin</span><strong>ouhhaiti@gmail.com</strong></div><nav><a href="./index.html">Vue générale</a><a href="./capacite.html">Capacité & pointage</a><a href="./catalogue.html">Catalogue</a><a href="./evenements.html">Événements</a><a href="./blog.html" class="is-active">Publications</a><a href="./galerie.html">Galerie</a><a href="./paiements.html">Paiements</a><a href="./roles.html">Comptes & accès</a></nav></aside>
+        <div class="admin-main-grid">
+          <section class="admin-panel wide">
+            <div class="dash-card-head"><div><p class="eyebrow">Édition</p><h2>Composer une publication</h2></div><span class="status-pill warning">Brouillon</span></div>
+            <form class="dash-form editorial-form"><label><span>Titre</span><input placeholder="Titre de la publication" /></label><label><span>Catégorie</span><select><option>Sélectionner une catégorie</option></select></label><label><span>Auteur</span><input placeholder="Nom de l'auteur" /></label><label><span>Relecteur</span><input placeholder="Nom du relecteur" /></label><label class="full"><span>Image de couverture</span><input type="file" accept="image/*" /></label><label class="full"><span>Galerie liée</span><input type="file" accept="image/*" multiple data-max-files="20" /><small data-upload-limit-message>20 photos maximum par publication.</small></label><label class="full"><span>Contenu</span><textarea placeholder="Contenu de la publication"></textarea></label><button class="btn-glass-primary full" type="button">Publier</button></form>
+          </section>
+          <section class="admin-panel admin-overview-panel"><div class="responsive-table"><table><thead><tr><th>Publication</th><th>Auteur</th><th>Statut</th><th>Galerie</th></tr></thead><tbody><tr><td colspan="4">Aucune publication enregistrée.</td></tr></tbody></table></div></section>
+        </div>
+      </section>
+    </main>
+    <footer class="border-t border-slate-200 bg-navy text-white" data-site-footer></footer>
+    <script type="module" src="../js/app.js"></script>
+  </body>
+</html>
+
+
+
+

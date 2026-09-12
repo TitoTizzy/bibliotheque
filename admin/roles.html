@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Comptes & accès | Administration</title>
+    <link rel="icon" href="../assets/favicon.jpg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{colors:{institution:"#075ea8",navy:"#12324a",gold:"#f3b51b",ink:"#111827",mist:"#eef6fb"},boxShadow:{soft:"0 16px 45px rgba(18, 50, 74, 0.12)"}}}};</script>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body class="bg-white text-ink protected-page" data-page="admin" data-admin-module="roles" data-root="..">
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur" data-site-header></header>
+    <main id="main" class="dashboard-shell admin-app">
+      <section class="admin-command-bar"><div><p class="eyebrow">Module</p><h1>Comptes & accès</h1><!-- Note dev: console SuperAdmin pour l'activation des comptes et la gestion des rôles. --></div></section>
+      <section class="admin-workspace">
+        <aside class="admin-nav-panel"><div class="admin-user-chip"><span class="status-pill success">SuperAdmin</span><strong>ouhhaiti@gmail.com</strong></div><nav><a href="./index.html">Vue générale</a><a href="./capacite.html">Capacité & pointage</a><a href="./catalogue.html">Catalogue</a><a href="./evenements.html">Événements</a><a href="./blog.html">Publications</a><a href="./galerie.html">Galerie</a><a href="./paiements.html">Paiements</a><a href="./roles.html" class="is-active">Comptes & accès</a></nav></aside>
+        <div class="admin-main-grid">
+          <section class="admin-panel" id="create-account">
+            <div class="dash-card-head"><div><p class="eyebrow">Création</p><h2>Créer / activer un compte</h2></div><span class="status-pill success">SuperAdmin</span></div>
+            <form class="dash-form" data-admin-create-profile-form>
+              <label><span>Email</span><input type="email" data-admin-profile-email required placeholder="email@exemple.com" /></label>
+              <label><span>Nom complet</span><input type="text" data-admin-profile-name required placeholder="Nom de l'adhérent" /></label>
+              <label><span>Mot de passe</span><input type="password" data-admin-profile-password placeholder="Laisser vide si le compte Auth existe déjà" /></label>
+              <label><span>Code adhérent</span><input type="text" data-admin-profile-code placeholder="ET-FMP-0000" /></label>
+              <label><span>Famille de compte</span><select data-admin-account-family><option value="member">Adhérent</option><option value="admin">Administration</option></select></label>
+              <label><span>Type adhérent</span><select data-admin-profile-type><option value="VISITOR">Visiteur inscrit</option><option value="OUH">Adhérent OUH</option><option value="ET-FMP">Étudiant partenaire</option><option value="ET">Étudiant</option><option value="PRO">Professionnel</option></select></label>
+              <label><span>Rôle</span><select data-admin-profile-role><option value="">Adhérent</option></select></label>
+              <label><span>Statut</span><select data-admin-profile-status><option value="active">Actif</option><option value="pending">En attente</option><option value="suspended">Suspendu</option><option value="archived">Archivé</option></select></label>
+              <button class="btn-glass-primary full" type="submit">Créer / activer</button>
+              <p class="auth-success hidden full" data-admin-create-profile-message></p>
+            </form>
+          </section>
+          <section class="admin-panel">
+            <div class="dash-card-head"><div><p class="eyebrow">Permissions</p><h2>SuperAdmin</h2></div><span class="status-pill success">Tous les pouvoirs</span></div>
+            <div class="permissions-grid" data-superadmin-permissions><label><input type="checkbox" checked disabled /> Chargement des permissions...</label></div>
+          </section>
+          <section class="admin-panel admin-overview-panel">
+            <div class="dash-card-head"><div><p class="eyebrow">Utilisateurs</p><h2>Gestion des comptes</h2></div><span class="status-pill info" data-users-count>0 compte</span></div>
+            <div class="responsive-table"><table data-admin-users-table><thead><tr><th>Utilisateur</th><th>Code</th><th>Type</th><th>Rôle</th><th>Statut</th><th>Action</th></tr></thead><tbody><tr><td colspan="6">Aucun utilisateur chargé.</td></tr></tbody></table></div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <footer class="border-t border-slate-200 bg-navy text-white" data-site-footer></footer>
+    <script type="module" src="../js/app.js"></script>
+  </body>
+</html>
+
+
+
+

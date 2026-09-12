@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accueil | Bibliothèque Edgard Petit</title>
+    <meta name="description" content="Bibliothèque Edgard Petit, un projet de l'Organisation de l'Union Haïtienne." />
+    <link rel="icon" href="./assets/favicon.jpg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { theme: { extend: { colors: { institution: "#075ea8", navy: "#12324a", gold: "#f3b51b", ink: "#111827", mist: "#eef6fb" }, boxShadow: { soft: "0 16px 45px rgba(18, 50, 74, 0.12)" } } } };
+    </script>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body class="bg-white text-ink" data-page="home">
+    <a class="skip-link" href="#main" data-i18n="skip">Aller au contenu</a>
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-8" aria-label="Navigation principale">
+        <a href="./index.html" class="flex min-w-0 items-center gap-3" aria-label="Bibliothèque Edgard Petit">
+          <img src="./assets/logo.png" alt="Logo Bibliothèque Edgard Petit" class="h-12 w-auto shrink-0" />
+          <span class="hidden text-sm font-semibold uppercase text-navy sm:block">Bibliothèque Edgard Petit</span>
+        </a>
+        <button id="mobile-menu-button" class="icon-button lg:hidden" type="button" aria-expanded="false" aria-controls="mobile-panel" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
+        <div id="primary-menu" class="hidden items-center gap-4 lg:flex">
+          <a href="./index.html" class="nav-link" data-nav="home" data-i18n="navHome">Accueil</a>
+          <a href="./pages/institution.html" class="nav-link" data-nav="institution" data-i18n="navInstitution">Institution</a>
+          <a href="./pages/catalogue.html" class="nav-link" data-nav="catalogue" data-i18n="navCatalog">Catalogue</a>
+          <a href="./pages/galerie.html" class="nav-link" data-nav="galerie">Galerie</a>
+          <a href="./pages/agenda.html" class="nav-link" data-nav="agenda" data-i18n="navEvents">Événements</a>
+          <a href="./pages/blog.html" class="nav-link" data-nav="blog" data-i18n="navBlog">Publications</a>
+          <select id="language-select" class="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-navy" aria-label="Langue"><option value="fr">FR</option><option value="ht">HT</option><option value="en">EN</option></select>
+          <a class="btn-primary" href="./auth/login.html" data-i18n="navLogin">Connexion</a>
+        </div>
+      </nav>
+      <div id="mobile-panel" class="hidden border-t border-slate-200 bg-white px-4 py-4 lg:hidden">
+        <div class="grid gap-3">
+          <a href="./index.html" class="nav-link" data-nav="home" data-i18n="navHome">Accueil</a>
+          <a href="./pages/institution.html" class="nav-link" data-nav="institution" data-i18n="navInstitution">Institution</a>
+          <a href="./pages/catalogue.html" class="nav-link" data-nav="catalogue" data-i18n="navCatalog">Catalogue</a>
+          <a href="./pages/galerie.html" class="nav-link" data-nav="galerie">Galerie</a>
+          <a href="./pages/agenda.html" class="nav-link" data-nav="agenda" data-i18n="navEvents">Événements</a>
+          <a href="./pages/blog.html" class="nav-link" data-nav="blog" data-i18n="navBlog">Publications</a>
+          <select id="mobile-language-select" class="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-navy" aria-label="Langue mobile"><option value="fr">FR</option><option value="ht">HT</option><option value="en">EN</option></select>
+          <a class="btn-primary" href="./auth/login.html" data-i18n="navLogin">Connexion</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero-band">
+        <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 lg:grid-cols-[1.08fr_0.92fr] lg:px-8 lg:py-20">
+          <div>
+            <p class="eyebrow" data-i18n="heroKicker">Un projet de l'Organisation de l'Union Haïtienne (OUH)</p>
+            <h1 class="mt-5 max-w-4xl text-4xl font-black leading-tight text-navy md:text-6xl" data-i18n="heroTitle">Bibliothèque Edgard Petit</h1>
+            <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-700" data-i18n="heroText">Un espace de savoir scientifique, de consultation sur place et de formation professionnelle au service des étudiants et professionnels haïtiens.</p>
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href="./pages/catalogue.html" class="btn-primary" data-i18n="heroCatalog">Explorer le catalogue</a>
+              <a href="./pages/agenda.html" class="btn-secondary" data-i18n="heroEvents">Voir les conférences</a>
+            </div>
+          </div>
+          <div class="hero-panel" aria-label="Aperçu de la Bibliothèque Edgard Petit">
+            <div class="hero-image-wrap">
+              <img src="./assets/hero.jpeg" alt="Salle et ressources de la Bibliothèque Edgard Petit" />
+              <div class="hero-image-badge">
+                <img src="./assets/logo.png" alt="" aria-hidden="true" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-banner">
+        <div class="mx-auto grid max-w-7xl items-center gap-8 px-4 py-14 lg:grid-cols-[1fr_1.1fr] lg:px-8">
+          <div>
+            <p class="eyebrow">Service culturel de l'OUH</p>
+            <h2 class="section-title">Un foyer de savoir à Bourdon</h2>
+            <p class="mt-5 text-lg leading-8 text-slate-700">
+              La Bibliothèque Edgard Petit est destinée aux étudiants et aux professionnels dont l'accès aux ressources scientifiques reste limité. Elle soutient la consultation sur place, les formations éducatives, le droit, la recherche et les sciences.
+            </p>
+          </div>
+          <img class="banner-image" src="./assets/edgard-petit.jpg" alt="Bannière officielle de la Bibliothèque Edgard Petit" loading="lazy" />
+        </div>
+      </section>
+
+      <section class="gallery-portal-section">
+        <div class="mx-auto max-w-7xl px-4 py-20 lg:px-8">
+          <a class="gallery-portal" href="./pages/galerie.html" aria-label="Ouvrir la galerie photo de la Bibliothèque Edgard Petit">
+            <div class="gallery-portal-copy">
+              <span class="glass-pill">Galerie administrée</span>
+              <p class="eyebrow">Vie de la bibliothèque</p>
+              <h2 class="section-title">Voir toutes les photos publiées</h2>
+              <p class="mt-5 leading-8 text-slate-700">
+                Un portail vers les images ajoutées par l'administration: formations, rencontres, conférences, activités éducatives et moments de vie à Bourdon.
+              </p>
+              <span class="portal-link">Ouvrir la galerie</span>
+            </div>
+            <div class="gallery-portal-visual" aria-hidden="true">
+              <img class="portal-photo portal-photo-main" src="./assets/home/equipe-bibliotheque.png" alt="" />
+              <img class="portal-photo portal-photo-top" src="./assets/home/salle-inauguration.jpg" alt="" />
+              <img class="portal-photo portal-photo-bottom" src="./assets/home/intervenante-sante.jpg" alt="" />
+              <div class="portal-glass-count"><strong>9</strong><span>photos</span></div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-band">
+        <div class="mx-auto max-w-7xl px-4 py-16 lg:px-8">
+          <div class="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <div>
+              <p class="eyebrow">Conférences passées</p>
+              <h2 class="section-title">Des rencontres au cœur du savoir</h2>
+            </div>
+            <a class="btn-primary" href="./pages/agenda.html">Voir l'agenda</a>
+          </div>
+          <div class="conference-strip mt-8">
+            <article>
+              <img src="./assets/home/conference-public.png" alt="Public assistant à une conférence dans la bibliothèque" loading="lazy" />
+              <div><span>Formation</span><h3>Public attentif et échanges professionnels</h3></div>
+            </article>
+            <article>
+              <img src="./assets/home/conference-droit.jpg" alt="Conférence animée devant un public à la Bibliothèque Edgard Petit" loading="lazy" />
+              <div><span>Droit</span><h3>Transmission d'expérience et questions citoyennes</h3></div>
+            </article>
+            <article>
+              <img src="./assets/home/atelier-lecture.jpg" alt="Atelier avec participants dans la salle de lecture" loading="lazy" />
+              <div><span>Séminaire</span><h3>Ateliers de lecture et formation continue</h3></div>
+            </article>
+            <article>
+              <img src="./assets/home/participants-seminaire.jpg" alt="Participants prenant des notes durant un séminaire" loading="lazy" />
+              <div><span>Communauté</span><h3>Professionnels, étudiants et lecteurs réunis</h3></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="mx-auto grid max-w-7xl gap-5 px-4 py-14 md:grid-cols-3 lg:px-8">
+        <a class="feature-card page-tile home-action" href="./pages/institution.html"><span class="feature-icon">E</span><h2 data-i18n="missionEducationTitle">Éducation</h2><p data-i18n="missionEducationText">Renforcer la formation et l'accès aux ressources scientifiques.</p></a>
+        <a class="feature-card page-tile home-action with-image" href="./pages/catalogue.html"><img src="./assets/home/livres-stack.jpg" alt="" aria-hidden="true" /><div><span class="feature-icon">A</span><h2 data-i18n="catalogTitle">Rechercher un ouvrage</h2><p data-i18n="heroCatalog">Explorer le catalogue</p></div></a>
+        <a class="feature-card page-tile home-action" href="./pages/blog.html"><span class="feature-icon">&</span><h2 data-i18n="blogTitle">Publications</h2><p data-i18n="blogKicker">Publications</p></a>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-navy text-white" data-site-footer></footer>
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
+

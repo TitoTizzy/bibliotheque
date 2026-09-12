@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tableau de bord adhérent | Bibliothèque Edgard Petit</title>
+    <meta name="description" content="Espace adhérent de la Bibliothèque Edgard Petit." />
+    <link rel="icon" href="../assets/favicon.jpg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{colors:{institution:"#075ea8",navy:"#12324a",gold:"#f3b51b",ink:"#111827",mist:"#eef6fb"},boxShadow:{soft:"0 16px 45px rgba(18, 50, 74, 0.12)"}}}};</script>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body class="bg-white text-ink protected-page" data-page="adherent" data-root="..">
+    <a class="skip-link" href="#main" data-i18n="skip">Aller au contenu</a>
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur" data-site-header></header>
+    <main id="main" class="dashboard-shell">
+      <section class="dashboard-hero">
+        <div>
+          <p class="eyebrow">Espace privé adhérent</p>
+          <h1 data-member-name>Bonjour</h1>
+          <p data-member-summary>Vos informations apparaîtront ici après connexion.</p>
+        </div>
+        <div class="dashboard-profile-card">
+          <span class="status-pill success" data-member-status>Compte actif</span>
+          <strong data-member-reservations>0 réservation</strong>
+          <span data-member-payments>0 paiement suivi</span>
+        </div>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="dash-card availability-card">
+          <div class="dash-card-head">
+            <div><p class="eyebrow">Disponibilité aujourd'hui</p><h2>Jauge globale</h2></div>
+            <span class="status-pill info" data-capacity-status>0 / 20 places</span>
+          </div>
+          <div class="capacity-ring" style="--value:0" data-capacity-ring><span data-capacity-percent>0%</span></div>
+          <p class="muted" data-capacity-message>Aucune occupation enregistrée.</p>
+        </article>
+
+        <article id="event-registration" class="dash-card">
+          <div class="dash-card-head"><div><p class="eyebrow">Nouvelle réservation</p><h2>Créneau de consultation</h2></div></div>
+          <form class="dash-form" data-appointment-form>
+            <label><span>Type</span><select data-appointment-type><option value="workspace_and_books">Accès + livre(s)</option><option value="workspace_only">Accès espace de travail</option><option value="books_only">Consultation de livre(s)</option></select></label>
+            <label><span>Date</span><input type="date" data-appointment-date required /></label>
+            <label><span>Heure début</span><input type="time" data-appointment-start required /></label>
+            <label><span>Durée</span><select data-appointment-duration><option value="2">2 heures</option><option value="1">1 heure</option><option value="3">3 heures</option><option value="4">4 heures</option></select></label>
+            <label class="full"><span>Livres souhaités</span><input type="text" placeholder="Titre ou code des livres souhaités" data-appointment-books /></label>
+            <button class="btn-glass-primary full" type="submit">Demander la réservation</button>
+            <p class="auth-success hidden full" data-appointment-message></p>
+          </form>
+        </article>
+      </section>
+
+      <section class="dashboard-grid three">
+        <article class="dash-card stat"><span>Prochain créneau</span><strong data-next-appointment>-</strong><small data-next-appointment-detail>Aucune réservation</small></article>
+        <article class="dash-card stat"><span>Statut paiement</span><strong data-payment-status>-</strong><small data-payment-detail>Aucun paiement</small></article>
+        <article class="dash-card stat"><span>Participations</span><strong data-participations>0</strong><small data-participations-detail>Aucune participation</small></article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="dash-card">
+          <div class="dash-card-head"><div><p class="eyebrow">Événement payant</p><h2>Inscription & paiement</h2></div><span class="status-pill info">En attente</span></div>
+          <form class="dash-form" data-event-payment-form>
+            <label><span>Événement</span><select data-member-event-select><option value="">Aucun événement disponible</option></select></label>
+            <label><span>Numéro adhérent</span><input type="text" placeholder="Votre code adhérent" data-member-code /></label>
+            <label><span>Prix initial</span><input type="text" value="-" readonly data-event-base-price /></label>
+            <label><span>Prix final</span><input type="text" value="-" readonly data-event-final-price /></label>
+            <label class="full"><span>Preuve MonCash / Natcash</span><input type="file" accept="image/jpeg,image/png,image/webp,application/pdf" data-payment-proof /></label>
+            <button class="btn-glass-secondary full" type="submit">Envoyer la preuve</button>
+            <p class="auth-success hidden full" data-event-payment-message></p>
+          </form>
+        </article>
+
+        <article class="dash-card">
+          <div class="dash-card-head"><div><p class="eyebrow">Historique</p><h2>Mes activités</h2></div></div>
+          <div class="responsive-table">
+            <table>
+              <thead><tr><th>Date</th><th>Type</th><th>Détail</th><th>Statut</th></tr></thead>
+              <tbody data-adherent-history>
+                <tr><td colspan="4">Aucune activité enregistrée.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+    <footer class="border-t border-slate-200 bg-navy text-white" data-site-footer></footer>
+    <script type="module" src="../js/app.js"></script>
+  </body>
+</html>
+

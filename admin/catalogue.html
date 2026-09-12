@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Catalogue | Administration</title>
+    <link rel="icon" href="../assets/favicon.jpg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{colors:{institution:"#075ea8",navy:"#12324a",gold:"#f3b51b",ink:"#111827",mist:"#eef6fb"},boxShadow:{soft:"0 16px 45px rgba(18, 50, 74, 0.12)"}}}};</script>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body class="bg-white text-ink protected-page" data-page="admin" data-admin-module="catalogue" data-root="..">
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur" data-site-header></header>
+    <main id="main" class="dashboard-shell admin-app">
+      <section class="admin-command-bar"><div><p class="eyebrow">Module</p><h1>Catalogue</h1><!-- Note dev: module catalogue avec import Excel, archivage et règle vitrine. --></div></section>
+      <section class="admin-workspace">
+        <aside class="admin-nav-panel"><div class="admin-user-chip"><span class="status-pill success">SuperAdmin</span><strong>ouhhaiti@gmail.com</strong></div><nav><a href="./index.html">Vue générale</a><a href="./capacite.html">Capacité & pointage</a><a href="./catalogue.html" class="is-active">Catalogue</a><a href="./evenements.html">Événements</a><a href="./blog.html">Publications</a><a href="./galerie.html">Galerie</a><a href="./paiements.html">Paiements</a><a href="./roles.html">Comptes & accès</a></nav></aside>
+        <div class="admin-main-grid">
+          <section class="admin-panel catalogue-import-panel">
+            <div class="dash-card-head"><div><p class="eyebrow">Import Excel</p><h2>Catalogue Supabase</h2></div><span class="status-pill info">Archive automatique</span></div>
+            <form class="catalogue-import-form catalogue-simple-form" data-catalog-import-form>
+              <input id="catalogue-file-input" class="sr-only" type="file" accept=".xlsx,.xls" data-catalog-file required />
+              <label class="btn-glass-primary catalogue-upload-button" for="catalogue-file-input">Téléverser le fichier Excel sur Supabase</label>
+              <p class="catalogue-upload-status" data-catalog-file-name>Aucun fichier téléversé.</p>
+              <input type="hidden" data-catalog-sync-delete value="true" />
+              <p class="auth-success hidden full" data-catalog-import-message></p>
+            </form>
+          </section>
+          <section class="admin-panel catalogue-archives-panel">
+            <div class="dash-card-head"><div><p class="eyebrow">Archives</p><h2>Versions importées</h2></div></div>
+            <div class="responsive-table archive-table"><table data-catalog-archives-table><thead><tr><th>Date</th><th>Fichier</th><th>Action</th></tr></thead><tbody><tr><td colspan="3">Aucune archive disponible.</td></tr></tbody></table></div>
+          </section>
+          <section class="admin-panel admin-overview-panel catalogue-table-panel">
+            <div class="dash-card-head"><div><p class="eyebrow">Base active</p><h2>Catalogue synchronisé</h2></div><span class="status-pill info" data-catalog-count>0 livre</span></div>
+            <form class="admin-catalog-filters" data-admin-catalog-filters aria-label="Filtres du catalogue administrateur">
+              <label class="field"><span>Recherche</span><input type="search" data-admin-book-search placeholder="Titre ou catégorie..." /></label>
+              <label class="field"><span>Catégorie/Sujet</span><select data-admin-category-filter></select></label>
+            </form>
+            <div class="responsive-table"><table data-admin-catalog-table data-show-location="true"><thead><tr><th>Emplacement</th><th>Titre du livre</th><th>Catégorie/Sujet</th><th>Auteur</th><th>Édition</th><th>Langue</th></tr></thead><tbody><tr><td colspan="6">Aucun livre importé.</td></tr></tbody></table></div>
+            <div class="catalog-pagination admin-catalog-pagination" data-admin-catalog-pagination></div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <footer class="border-t border-slate-200 bg-navy text-white" data-site-footer></footer>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script type="module" src="../js/app.js"></script>
+  </body>
+</html>
+
+
+
+

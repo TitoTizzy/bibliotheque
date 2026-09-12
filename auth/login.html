@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Connexion | Bibliothèque Edgard Petit</title>
+    <meta name="description" content="Connexion et inscription à l'espace adhérent de la Bibliothèque Edgard Petit." />
+    <link rel="icon" href="../assets/favicon.jpg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{colors:{institution:"#075ea8",navy:"#12324a",gold:"#f3b51b",ink:"#111827",mist:"#eef6fb"},boxShadow:{soft:"0 16px 45px rgba(18, 50, 74, 0.12)"}}}};</script>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body class="bg-white text-ink" data-page="auth" data-root="..">
+    <a class="skip-link" href="#main" data-i18n="skip">Aller au contenu</a>
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur" data-site-header></header>
+
+    <main id="main" class="auth-shell">
+      <section class="auth-hero">
+        <div class="auth-copy">
+          <p class="eyebrow" data-i18n="authKicker">Espace adhérent</p>
+          <h1 data-i18n="authTitle">Connexion / Inscription</h1>
+          <p data-i18n="authText">
+            Accédez au catalogue complet, aux inscriptions d'événements, aux réservations de consultation et au suivi de vos paiements.
+          </p>
+          <div class="auth-benefits" aria-label="Avantages de l'espace adhérent">
+            <span>Catalogue complet</span>
+            <span>Réservations</span>
+            <span>Événements</span>
+            <span>Paiements</span>
+          </div>
+        </div>
+
+        <div class="auth-visual" aria-label="Bibliothèque Edgard Petit">
+          <img src="../assets/edgard-petit.jpg" alt="Bannière Bibliothèque Edgard Petit" />
+          <div class="auth-visual-card">
+            <strong>OUH Éducation</strong>
+            <span>Un espace privé pour gérer l'expérience adhérent.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="auth-panel" aria-label="Connexion et inscription">
+        <div class="auth-tabs" role="tablist" aria-label="Choisir une action">
+          <button class="is-active" type="button" role="tab" aria-selected="true" data-auth-tab="login">Connexion</button>
+          <button type="button" role="tab" aria-selected="false" data-auth-tab="signup">Demande d'inscription</button>
+        </div>
+
+        <form class="auth-form" data-auth-panel="login" data-login-form>
+          <div class="auth-form-head">
+            <h2>Accès adhérent</h2>
+            <p>Connectez-vous pour accéder à vos services privés.</p>
+          </div>
+          <label class="field"><span>Email</span><input data-login-email type="email" placeholder="nom@example.com" autocomplete="email" required /></label>
+          <label class="field"><span data-i18n="passwordLabel">Mot de passe</span><input data-login-password type="password" placeholder="••••••••" autocomplete="current-password" required /></label>
+          <button class="btn-glass-primary" type="submit">Se connecter</button>
+          <button class="auth-link-button" type="button" data-password-recovery>Envoyer un lien de réinitialisation</button>
+          <p class="auth-muted">Votre espace permet de consulter le catalogue complet, gérer vos réservations et suivre vos inscriptions.</p>
+          <p class="auth-success hidden" data-login-message></p>
+        </form>
+
+        <form class="auth-form hidden" data-auth-panel="signup" data-signup-form>
+          <div class="auth-form-head">
+            <h2>Créer une demande</h2>
+            <p>Remplissez les informations nécessaires à l'ouverture de votre compte adhérent.</p>
+          </div>
+          <div class="auth-form-grid">
+            <label class="field"><span>Prénom</span><input data-signup-first-name type="text" placeholder="Votre prénom" autocomplete="given-name" required /></label>
+            <label class="field"><span>Nom</span><input data-signup-last-name type="text" placeholder="Votre nom" autocomplete="family-name" required /></label>
+            <label class="field"><span>Email</span><input data-signup-email type="email" placeholder="nom@example.com" autocomplete="email" required /></label>
+            <label class="field"><span>Téléphone</span><input data-signup-phone type="tel" placeholder="+509 0000-0000" autocomplete="tel" /></label>
+            <label class="field"><span>Profil</span><select data-signup-profile><option>Étudiant</option><option>Professionnel</option><option>Partenaire OUH</option><option>Autre</option></select></label>
+            <label class="field"><span>Institution</span><input data-signup-institution type="text" placeholder="Université, école, organisation..." /></label>
+            <label class="field"><span data-i18n="passwordLabel">Mot de passe</span><input data-signup-password type="password" placeholder="••••••••" autocomplete="new-password" minlength="8" required /></label>
+          </div>
+          <label class="field"><span>Motivation</span><input data-signup-motivation type="text" placeholder="Pourquoi souhaitez-vous devenir adhérent ?" /></label>
+          <button class="btn-glass-secondary" type="submit">Soumettre la demande</button>
+          <p class="auth-muted">L'administration vérifiera votre demande avant activation du compte.</p>
+          <p class="auth-success hidden" data-signup-message>Demande enregistrée. L'administration procédera à la vérification.</p>
+        </form>
+
+        <details class="admin-access">
+          <summary>Accès équipe</summary>
+          <div>
+            <p>Connectez-vous avec un compte autorisé. Les comptes SuperAdmin, modérateur et bibliothécaire sont redirigés vers l'administration.</p>
+          </div>
+        </details>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-navy text-white" data-site-footer></footer>
+    <script type="module" src="../js/app.js"></script>
+  </body>
+</html>
+

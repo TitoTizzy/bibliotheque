@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Catalogue | Bibliothèque Edgard Petit</title>
+    <meta name="description" content="Catalogue public des ouvrages de la Bibliothèque Edgard Petit." />
+    <link rel="icon" href="../assets/favicon.jpg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{colors:{institution:"#075ea8",navy:"#12324a",gold:"#f3b51b",ink:"#111827",mist:"#eef6fb"},boxShadow:{soft:"0 16px 45px rgba(18, 50, 74, 0.12)"}}}};</script>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body class="bg-white text-ink" data-page="catalogue" data-root="..">
+    <a class="skip-link" href="#main" data-i18n="skip">Aller au contenu</a>
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur" data-site-header></header>
+    <main id="main">
+      <section class="mx-auto max-w-7xl px-4 py-16 lg:px-8">
+        <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <div>
+            <p class="eyebrow" data-i18n="catalogKicker">Catalogue en ligne</p>
+            <h1 class="section-title" data-i18n="catalogTitle">Rechercher un ouvrage</h1>
+            <p id="catalog-public-notice" class="catalog-public-note mt-5">
+              Plongez dans nos livres. Connectez-vous pour consulter le catalogue complet.
+            </p>
+          </div>
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center md:flex-col md:items-end">
+            <p id="catalog-count" class="rounded-md bg-mist px-4 py-2 text-sm font-semibold text-navy"></p>
+            <a id="full-catalog-link" class="btn-glass-primary" href="../auth/login.html?next=adherent">Catalogue complet</a>
+          </div>
+        </div>
+        <form id="catalog-filters" class="catalog-filter-panel mt-8" aria-label="Filtres du catalogue">
+          <label class="field"><span data-i18n="searchLabel">Recherche</span><input id="book-search" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="Titre ou catégorie..." /></label>
+          <label class="field"><span data-i18n="categoryLabel">Catégorie/Sujet</span><select id="category-filter"></select></label>
+        </form>
+        <div class="catalog-table-shell mt-8">
+          <table class="catalog-table" id="books-table">
+            <thead>
+              <tr>
+                <th>Titre du livre</th>
+                <th>Catégorie/Sujet</th>
+                <th>Auteur</th>
+                <th>Édition</th>
+                <th>Langue</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="catalog-pagination" data-catalog-pagination></div>
+      </section>
+    </main>
+    <footer class="border-t border-slate-200 bg-navy text-white" data-site-footer></footer>
+    <script type="module" src="../js/app.js"></script>
+  </body>
+</html>
+
+
