@@ -1705,15 +1705,42 @@ footer.bg-navy > * {
   font-weight: 950;
 }
 
-.admin-device-preview-grid {
-  align-items: start;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: minmax(18rem, 1fr) minmax(15rem, 0.78fr) minmax(11rem, 0.55fr);
-}
-
 .preview-surface-card {
   margin: 0;
+}
+
+.admin-preview-switcher {
+  background: rgba(8, 32, 51, 0.08);
+  border: 1px solid rgba(7, 94, 168, 0.16);
+  border-radius: 0.85rem;
+  display: grid;
+  gap: 0.35rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 1rem;
+  padding: 0.35rem;
+}
+
+.admin-preview-switcher button {
+  border: 1px solid transparent;
+  border-radius: 0.65rem;
+  color: #0b2238;
+  font-weight: 950;
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.admin-preview-switcher button:hover,
+.admin-preview-switcher button:focus {
+  border-color: rgba(7, 94, 168, 0.34);
+  outline: 0;
+}
+
+.admin-preview-switcher button[aria-pressed="true"] {
+  background: linear-gradient(135deg, #0f72ba, #43c6b7);
+  border-color: rgba(255, 255, 255, 0.64);
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(7, 94, 168, 0.22);
 }
 
 .admin-device-frame {
@@ -1723,7 +1750,10 @@ footer.bg-navy > * {
   display: grid;
   gap: 0.65rem;
   min-width: 0;
+  margin-inline: auto;
   padding: 0.75rem;
+  transition: max-width 220ms ease, transform 220ms ease;
+  width: 100%;
 }
 
 .admin-device-frame > span {
@@ -1741,15 +1771,15 @@ footer.bg-navy > * {
 }
 
 .admin-device-desktop > div {
-  max-width: 28rem;
+  max-width: 42rem;
 }
 
-.admin-device-tablet > div {
-  max-width: 21rem;
+.admin-device-tablet {
+  max-width: 30rem;
 }
 
-.admin-device-phone > div {
-  max-width: 14rem;
+.admin-device-phone {
+  max-width: 18rem;
 }
 
 .admin-device-phone .event-card,
@@ -3553,7 +3583,7 @@ select {
     width: 100%;
   }
 
-  .admin-device-preview-grid {
+  .admin-preview-switcher {
     grid-template-columns: 1fr;
   }
 

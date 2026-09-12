@@ -1308,14 +1308,36 @@ function setupAdminPublishPreview() {
       <div class="dash-card-head">
         <div><p class="eyebrow">Aperçu public</p><h2 data-admin-preview-title>Prévisualisation</h2></div>
       </div>
-      <div class="admin-device-preview-grid" data-admin-preview-stage></div>
+      <div class="admin-preview-switcher" role="group" aria-label="Choisir la taille d'aperçu">
+        <button type="button" data-preview-device="desktop" aria-pressed="true">Ordinateur</button>
+        <button type="button" data-preview-device="tablet" aria-pressed="false">Tablette</button>
+        <button type="button" data-preview-device="phone" aria-pressed="false">Smartphone</button>
+      </div>
+      <section class="admin-device-frame admin-device-desktop" data-admin-preview-frame>
+        <span data-admin-preview-device-label>Ordinateur</span>
+        <div data-admin-preview-stage></div>
+      </section>
     </article>
   `;
   document.body.append(dialog);
+  let activeDevice = "desktop";
 
   const closePreview = () => {
     dialog.classList.add("hidden");
     document.body.classList.remove("flyer-lightbox-open");
+  };
+
+  const setPreviewDevice = (device) => {
+    activeDevice = device;
+    const frame = dialog.querySelector("[data-admin-preview-frame]");
+    const label = dialog.querySelector("[data-admin-preview-device-label]");
+    const labels = { desktop: "Ordinateur", tablet: "Tablette", phone: "Smartphone" };
+    frame.classList.remove("admin-device-desktop", "admin-device-tablet", "admin-device-phone");
+    frame.classList.add(`admin-device-${device}`);
+    if (label) label.textContent = labels[device] || "Ordinateur";
+    dialog.querySelectorAll("[data-preview-device]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.previewDevice === device));
+    });
   };
 
   const openPreview = (type, form) => {
@@ -1334,21 +1356,8 @@ function setupAdminPublishPreview() {
 
     if (!stage || !renderers[type]) return;
     title.textContent = labels[type] || "Prévisualisation";
-    const previewMarkup = renderers[type](form);
-    stage.innerHTML = `
-      <section class="admin-device-frame admin-device-desktop">
-        <span>Ordinateur</span>
-        <div>${previewMarkup}</div>
-      </section>
-      <section class="admin-device-frame admin-device-tablet">
-        <span>Tablette</span>
-        <div>${previewMarkup}</div>
-      </section>
-      <section class="admin-device-frame admin-device-phone">
-        <span>Smartphone</span>
-        <div>${previewMarkup}</div>
-      </section>
-    `;
+    stage.innerHTML = renderers[type](form);
+    setPreviewDevice(activeDevice);
     dialog.classList.remove("hidden");
     document.body.classList.add("flyer-lightbox-open");
     dialog.querySelector("[data-admin-preview-close]")?.focus();
@@ -1363,6 +1372,9 @@ function setupAdminPublishPreview() {
   });
 
   dialog.querySelector("[data-admin-preview-close]")?.addEventListener("click", closePreview);
+  dialog.querySelectorAll("[data-preview-device]").forEach((button) => {
+    button.addEventListener("click", () => setPreviewDevice(button.dataset.previewDevice || "desktop"));
+  });
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) closePreview();
   });
