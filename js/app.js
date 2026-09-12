@@ -1191,7 +1191,7 @@ function renderGallery() {
 
 function getPreviewImageUrl(form) {
   const file = form.querySelector("[data-preview-image]")?.files?.[0];
-  return file ? URL.createObjectURL(file) : resolveAssetPath("./assets/edgard-petit.jpg");
+  return file ? URL.createObjectURL(file) : "";
 }
 
 function getPreviewValue(form, selector, fallback = "") {
@@ -1211,11 +1211,14 @@ function renderEventPreview(form) {
   const renderedDate = date
     ? new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium", timeStyle: time ? "short" : undefined }).format(new Date(`${date}T${time || "00:00"}`))
     : "Date à définir";
+  const flyerMarkup = flyer
+    ? `<img class="event-flyer" src="${flyer}" alt="${escapeHtml(title)}" />`
+    : `<div class="event-flyer preview-empty-media">Flyer non sélectionné</div>`;
 
   return `
     <article class="event-card preview-surface-card">
       <button class="event-flyer-button" type="button">
-        <img class="event-flyer" src="${flyer}" alt="${escapeHtml(title)}" />
+        ${flyerMarkup}
         <span>Voir le flyer</span>
       </button>
       <div class="event-card-top">
@@ -1243,10 +1246,13 @@ function renderPostPreview(form) {
   const content = getPreviewValue(form, "[data-preview-description]", "Contenu de la publication");
   const cover = getPreviewImageUrl(form);
   const excerpt = content.length > 170 ? `${content.slice(0, 170)}...` : content;
+  const coverMarkup = cover
+    ? `<img class="blog-cover" src="${cover}" alt="${escapeHtml(title)}" />`
+    : `<div class="blog-cover preview-empty-media">Image de couverture non sélectionnée</div>`;
 
   return `
     <article class="blog-card preview-surface-card">
-      <img class="blog-cover" src="${cover}" alt="${escapeHtml(title)}" />
+      ${coverMarkup}
       <div class="blog-card-head">
         <span class="badge">${escapeHtml(category)}</span>
         <time>${new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium" }).format(new Date())}</time>
@@ -1270,10 +1276,13 @@ function renderGalleryPreview(form) {
   const album = getPreviewValue(form, "[data-preview-category]", "Album");
   const description = getPreviewValue(form, "[data-preview-description]", "Description de la photo");
   const src = getPreviewImageUrl(form);
+  const mediaMarkup = src
+    ? `<img src="${src}" alt="${escapeHtml(title)}" />`
+    : `<div class="preview-gallery-empty preview-empty-media">Photo non sélectionnée</div>`;
 
   return `
     <figure class="preview-gallery-figure">
-      <img src="${src}" alt="${escapeHtml(title)}" />
+      ${mediaMarkup}
       <figcaption>
         <strong>${escapeHtml(title)}</strong>
         <span>${escapeHtml(album)}</span>
@@ -1299,7 +1308,7 @@ function setupAdminPublishPreview() {
       <div class="dash-card-head">
         <div><p class="eyebrow">Aperçu public</p><h2 data-admin-preview-title>Prévisualisation</h2></div>
       </div>
-      <div class="admin-live-preview-stage" data-admin-preview-stage></div>
+      <div class="admin-device-preview-grid" data-admin-preview-stage></div>
     </article>
   `;
   document.body.append(dialog);
@@ -1325,7 +1334,21 @@ function setupAdminPublishPreview() {
 
     if (!stage || !renderers[type]) return;
     title.textContent = labels[type] || "Prévisualisation";
-    stage.innerHTML = renderers[type](form);
+    const previewMarkup = renderers[type](form);
+    stage.innerHTML = `
+      <section class="admin-device-frame admin-device-desktop">
+        <span>Ordinateur</span>
+        <div>${previewMarkup}</div>
+      </section>
+      <section class="admin-device-frame admin-device-tablet">
+        <span>Tablette</span>
+        <div>${previewMarkup}</div>
+      </section>
+      <section class="admin-device-frame admin-device-phone">
+        <span>Smartphone</span>
+        <div>${previewMarkup}</div>
+      </section>
+    `;
     dialog.classList.remove("hidden");
     document.body.classList.add("flyer-lightbox-open");
     dialog.querySelector("[data-admin-preview-close]")?.focus();

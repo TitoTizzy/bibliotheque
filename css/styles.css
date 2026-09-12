@@ -1692,11 +1692,11 @@ footer.bg-navy > * {
   box-shadow: 0 34px 90px rgba(0, 0, 0, 0.34);
   color: #082033;
   max-height: min(92vh, 54rem);
-  max-width: 34rem;
+  max-width: 76rem;
   overflow: auto;
   padding: clamp(1rem, 3vw, 1.5rem);
   position: relative;
-  width: min(100%, 34rem);
+  width: min(100%, 76rem);
 }
 
 .admin-live-preview-panel .dash-card-head h2 {
@@ -1705,13 +1705,91 @@ footer.bg-navy > * {
   font-weight: 950;
 }
 
-.admin-live-preview-stage {
+.admin-device-preview-grid {
+  align-items: start;
   display: grid;
   gap: 1rem;
+  grid-template-columns: minmax(18rem, 1fr) minmax(15rem, 0.78fr) minmax(11rem, 0.55fr);
 }
 
 .preview-surface-card {
   margin: 0;
+}
+
+.admin-device-frame {
+  background: rgba(8, 32, 51, 0.08);
+  border: 1px solid rgba(7, 94, 168, 0.16);
+  border-radius: 1rem;
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.75rem;
+}
+
+.admin-device-frame > span {
+  color: #075ea8;
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.admin-device-frame > div {
+  margin-inline: auto;
+  min-width: 0;
+  width: 100%;
+}
+
+.admin-device-desktop > div {
+  max-width: 28rem;
+}
+
+.admin-device-tablet > div {
+  max-width: 21rem;
+}
+
+.admin-device-phone > div {
+  max-width: 14rem;
+}
+
+.admin-device-phone .event-card,
+.admin-device-phone .blog-card,
+.admin-device-phone .preview-gallery-figure figcaption {
+  padding: 0.75rem;
+}
+
+.admin-device-phone .event-card h3,
+.admin-device-phone .blog-card h3 {
+  font-size: 1rem;
+  line-height: 1.22;
+}
+
+.admin-device-phone .event-card p,
+.admin-device-phone .blog-card p,
+.admin-device-phone .preview-gallery-figure p {
+  font-size: 0.82rem;
+  line-height: 1.48;
+}
+
+.admin-device-phone .event-card-top,
+.admin-device-phone .blog-card-head,
+.admin-device-phone .blog-actions {
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.preview-empty-media {
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(238, 246, 251, 0.94), rgba(255, 255, 255, 0.76)) !important;
+  border: 1px dashed rgba(7, 94, 168, 0.42) !important;
+  color: #075ea8 !important;
+  display: flex !important;
+  font-weight: 950;
+  justify-content: center;
+  min-height: 12rem;
+  padding: 1rem;
+  text-align: center;
 }
 
 .preview-gallery-figure {
@@ -1727,6 +1805,11 @@ footer.bg-navy > * {
   display: block;
   object-fit: cover;
   width: 100%;
+}
+
+.preview-gallery-empty {
+  aspect-ratio: 4 / 3;
+  min-height: 10rem;
 }
 
 .preview-gallery-figure figcaption {
@@ -3309,6 +3392,41 @@ select {
 }
 
 @media (max-width: 640px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  main :where(section, .dashboard-shell, .admin-app) {
+    scroll-margin-top: 5rem;
+  }
+
+  .section-title,
+  .hero-band h1,
+  .dashboard-hero h1,
+  .admin-command-bar h1,
+  .auth-hero h1 {
+    font-size: clamp(2rem, 12vw, 3rem);
+    line-height: 1.05;
+  }
+
+  .hero-band,
+  .mx-auto.max-w-7xl {
+    padding-inline: 1rem;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-glass-primary,
+  .btn-glass-secondary,
+  .logout-button,
+  .session-link {
+    justify-content: center;
+    min-height: 44px;
+    width: 100%;
+  }
+
   .site-footer-inner {
     grid-template-columns: 1fr;
   }
@@ -3372,7 +3490,82 @@ select {
   }
 
   .dashboard-shell {
-    padding-inline: 0.75rem;
+    padding: 1rem 0.75rem 2.5rem;
+  }
+
+  .admin-command-bar,
+  .admin-panel,
+  .admin-nav-panel,
+  .admin-kpi-card,
+  .glass-panel,
+  .auth-panel,
+  .auth-hero,
+  .book-card,
+  .event-card,
+  .blog-card {
+    border-radius: 0.8rem;
+  }
+
+  .admin-command-bar {
+    padding: 1rem;
+  }
+
+  .admin-panel {
+    padding: 1rem;
+  }
+
+  .responsive-table,
+  .catalog-table-shell {
+    margin-inline: -0.25rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .responsive-table table,
+  .catalog-table {
+    min-width: 42rem;
+  }
+
+  .catalog-pagination {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .catalog-pagination span {
+    order: -1;
+    text-align: center;
+  }
+
+  .book-detail-dialog,
+  .admin-live-preview-dialog,
+  .gallery-lightbox,
+  .flyer-lightbox {
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .book-detail-panel,
+  .admin-live-preview-panel,
+  .gallery-lightbox-panel,
+  .flyer-lightbox-shell {
+    border-radius: 0;
+    max-height: 100vh;
+    width: 100%;
+  }
+
+  .admin-device-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-device-frame > div,
+  .admin-device-desktop > div,
+  .admin-device-tablet > div,
+  .admin-device-phone > div {
+    max-width: 100%;
+  }
+
+  .admin-preview-card {
+    max-width: none;
   }
 }
 
