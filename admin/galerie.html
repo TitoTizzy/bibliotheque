@@ -19,7 +19,7 @@
         <div class="admin-main-grid">
           <section class="admin-panel">
             <div class="dash-card-head"><div><p class="eyebrow">Publication</p><h2>Nouvelle photo</h2></div><span class="status-pill success">Publique</span></div>
-            <form class="dash-form"><label><span>Titre</span><input placeholder="Titre de la photo" /></label><label><span>Album</span><select><option>Sélectionner un album</option></select></label><label class="full"><span>Photo</span><input type="file" accept="image/*" /></label><label class="full"><span>Description</span><input placeholder="Description de la photo" /></label><button class="btn-glass-primary full" type="button">Publier la photo</button></form>
+            <form class="dash-form" data-preview-form="gallery"><label><span>Titre</span><input data-preview-title placeholder="Titre de la photo" /></label><label><span>Album</span><select data-preview-category><option>Sélectionner un album</option></select></label><label class="full"><span>Photo</span><input data-preview-image type="file" accept="image/*" /></label><label class="full"><span>Description</span><input data-preview-description placeholder="Description de la photo" /></label><button class="btn-glass-secondary full" type="button" data-open-preview="gallery">Prévisualiser</button><button class="btn-glass-primary full" type="button">Publier la photo</button></form>
           </section>
           <section class="admin-panel">
             <div class="dash-card-head"><div><p class="eyebrow">Albums</p><h2>Répartition</h2></div></div>

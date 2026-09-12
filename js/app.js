@@ -1189,6 +1189,165 @@ function renderGallery() {
     .join("");
 }
 
+function getPreviewImageUrl(form) {
+  const file = form.querySelector("[data-preview-image]")?.files?.[0];
+  return file ? URL.createObjectURL(file) : resolveAssetPath("./assets/edgard-petit.jpg");
+}
+
+function getPreviewValue(form, selector, fallback = "") {
+  const value = form.querySelector(selector)?.value?.trim();
+  return value || fallback;
+}
+
+function renderEventPreview(form) {
+  const title = getPreviewValue(form, "[data-preview-title]", "Titre de l'événement");
+  const type = getPreviewValue(form, "[data-preview-category]", "Événement");
+  const description = getPreviewValue(form, "[data-preview-description]", "Description de l'événement");
+  const date = getPreviewValue(form, "[data-preview-date]");
+  const time = getPreviewValue(form, "[data-preview-time]");
+  const capacity = Number(getPreviewValue(form, "[data-preview-capacity]", "0"));
+  const priceValue = Number(getPreviewValue(form, "[data-preview-price]", "0"));
+  const flyer = getPreviewImageUrl(form);
+  const renderedDate = date
+    ? new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium", timeStyle: time ? "short" : undefined }).format(new Date(`${date}T${time || "00:00"}`))
+    : "Date à définir";
+
+  return `
+    <article class="event-card preview-surface-card">
+      <button class="event-flyer-button" type="button">
+        <img class="event-flyer" src="${flyer}" alt="${escapeHtml(title)}" />
+        <span>Voir le flyer</span>
+      </button>
+      <div class="event-card-top">
+        <span class="badge">${escapeHtml(type)}</span>
+        <span class="status-pill success">${capacity || 0} place${capacity > 1 ? "s" : ""}</span>
+      </div>
+      <h3 class="mt-4 text-xl">${escapeHtml(title)}</h3>
+      <p>${escapeHtml(description)}</p>
+      <dl class="event-meta">
+        <div><dt>Date</dt><dd>${escapeHtml(renderedDate)}</dd></div>
+        <div><dt>Lieu</dt><dd>Bibliothèque Edgard Petit</dd></div>
+        <div><dt>Capacité</dt><dd>0/${capacity || 0} inscrits</dd></div>
+      </dl>
+      <div class="event-price">${priceValue ? formatCurrency(priceValue) : state.dictionary.free}</div>
+      <a class="btn-primary mt-auto" href="#">Connexion pour s'inscrire</a>
+    </article>
+  `;
+}
+
+function renderPostPreview(form) {
+  const title = getPreviewValue(form, "[data-preview-title]", "Titre de la publication");
+  const category = getPreviewValue(form, "[data-preview-category]", "Publication");
+  const author = getPreviewValue(form, "[data-preview-author]", "Auteur");
+  const auditor = getPreviewValue(form, "[data-preview-auditor]", "Relecteur");
+  const content = getPreviewValue(form, "[data-preview-description]", "Contenu de la publication");
+  const cover = getPreviewImageUrl(form);
+  const excerpt = content.length > 170 ? `${content.slice(0, 170)}...` : content;
+
+  return `
+    <article class="blog-card preview-surface-card">
+      <img class="blog-cover" src="${cover}" alt="${escapeHtml(title)}" />
+      <div class="blog-card-head">
+        <span class="badge">${escapeHtml(category)}</span>
+        <time>${new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium" }).format(new Date())}</time>
+      </div>
+      <h3 class="mt-4 text-xl">${escapeHtml(title)}</h3>
+      <p>${escapeHtml(excerpt)}</p>
+      <dl class="mt-5 grid gap-3 text-sm">
+        <div><dt class="font-bold text-slate-500">Auteur</dt><dd class="font-semibold text-navy">${escapeHtml(author)}</dd></div>
+        <div><dt class="font-bold text-slate-500">Relecture</dt><dd class="font-semibold text-navy">${escapeHtml(auditor)}</dd></div>
+      </dl>
+      <div class="blog-actions">
+        <button class="btn-glass-primary" type="button">Lire la publication</button>
+        <button class="btn-glass-secondary" type="button">Partager</button>
+      </div>
+    </article>
+  `;
+}
+
+function renderGalleryPreview(form) {
+  const title = getPreviewValue(form, "[data-preview-title]", "Titre de la photo");
+  const album = getPreviewValue(form, "[data-preview-category]", "Album");
+  const description = getPreviewValue(form, "[data-preview-description]", "Description de la photo");
+  const src = getPreviewImageUrl(form);
+
+  return `
+    <figure class="preview-gallery-figure">
+      <img src="${src}" alt="${escapeHtml(title)}" />
+      <figcaption>
+        <strong>${escapeHtml(title)}</strong>
+        <span>${escapeHtml(album)}</span>
+        <p>${escapeHtml(description)}</p>
+      </figcaption>
+    </figure>
+  `;
+}
+
+function setupAdminPublishPreview() {
+  const previewButtons = document.querySelectorAll("[data-open-preview]");
+  if (!previewButtons.length || document.querySelector("[data-admin-preview-dialog]")) return;
+
+  const dialog = document.createElement("div");
+  dialog.className = "admin-live-preview-dialog hidden";
+  dialog.dataset.adminPreviewDialog = "true";
+  dialog.setAttribute("role", "dialog");
+  dialog.setAttribute("aria-modal", "true");
+  dialog.setAttribute("aria-label", "Aperçu public");
+  dialog.innerHTML = `
+    <article class="admin-live-preview-panel">
+      <button class="dialog-close" type="button" data-admin-preview-close aria-label="Fermer">×</button>
+      <div class="dash-card-head">
+        <div><p class="eyebrow">Aperçu public</p><h2 data-admin-preview-title>Prévisualisation</h2></div>
+      </div>
+      <div class="admin-live-preview-stage" data-admin-preview-stage></div>
+    </article>
+  `;
+  document.body.append(dialog);
+
+  const closePreview = () => {
+    dialog.classList.add("hidden");
+    document.body.classList.remove("flyer-lightbox-open");
+  };
+
+  const openPreview = (type, form) => {
+    const stage = dialog.querySelector("[data-admin-preview-stage]");
+    const title = dialog.querySelector("[data-admin-preview-title]");
+    const renderers = {
+      event: renderEventPreview,
+      post: renderPostPreview,
+      gallery: renderGalleryPreview
+    };
+    const labels = {
+      event: "Événement sur la vitrine",
+      post: "Publication sur la vitrine",
+      gallery: "Photo dans la galerie"
+    };
+
+    if (!stage || !renderers[type]) return;
+    title.textContent = labels[type] || "Prévisualisation";
+    stage.innerHTML = renderers[type](form);
+    dialog.classList.remove("hidden");
+    document.body.classList.add("flyer-lightbox-open");
+    dialog.querySelector("[data-admin-preview-close]")?.focus();
+  };
+
+  previewButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const type = button.dataset.openPreview;
+      const form = document.querySelector(`[data-preview-form="${type}"]`);
+      if (form) openPreview(type, form);
+    });
+  });
+
+  dialog.querySelector("[data-admin-preview-close]")?.addEventListener("click", closePreview);
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) closePreview();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !dialog.classList.contains("hidden")) closePreview();
+  });
+}
+
 function getGalleryShareUrl(item) {
   const baseUrl = `${window.location.origin}${window.location.pathname}`;
   return `${baseUrl}#${item.id}`;
@@ -3041,6 +3200,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupAdminSidebar();
   setupCustomAdminSelects();
   setupAdminUploadLimits();
+  setupAdminPublishPreview();
   setupBookDetailsDialog();
   const catalogFilters = document.querySelector("#catalog-filters");
   const updateCatalog = () => {

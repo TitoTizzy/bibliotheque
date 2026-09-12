@@ -1642,6 +1642,7 @@ footer.bg-navy > * {
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(125, 211, 252, 0.3);
   border-radius: 1rem;
+  align-content: start;
   display: grid;
   gap: 0.75rem;
   padding: 0.85rem;
@@ -1663,6 +1664,91 @@ footer.bg-navy > * {
 .admin-preview-card span {
   color: var(--admin-muted);
   line-height: 1.55;
+}
+
+.admin-live-preview-dialog {
+  align-items: center;
+  background: rgba(3, 15, 28, 0.76);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 1rem;
+  position: fixed;
+  z-index: 90;
+}
+
+.admin-live-preview-dialog.hidden {
+  display: none;
+}
+
+.admin-live-preview-panel {
+  -webkit-backdrop-filter: blur(30px) saturate(1.2);
+  backdrop-filter: blur(30px) saturate(1.2);
+  background:
+    radial-gradient(circle at 85% 0%, rgba(125, 211, 252, 0.2), transparent 36%),
+    rgba(244, 249, 252, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 1rem;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.34);
+  color: #082033;
+  max-height: min(92vh, 54rem);
+  max-width: 34rem;
+  overflow: auto;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  position: relative;
+  width: min(100%, 34rem);
+}
+
+.admin-live-preview-panel .dash-card-head h2 {
+  color: #082033;
+  font-size: 1.25rem;
+  font-weight: 950;
+}
+
+.admin-live-preview-stage {
+  display: grid;
+  gap: 1rem;
+}
+
+.preview-surface-card {
+  margin: 0;
+}
+
+.preview-gallery-figure {
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 1rem;
+  box-shadow: 0 18px 54px rgba(18, 50, 74, 0.14);
+  overflow: hidden;
+}
+
+.preview-gallery-figure img {
+  aspect-ratio: 4 / 3;
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.preview-gallery-figure figcaption {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+}
+
+.preview-gallery-figure strong {
+  color: #082033;
+  font-size: 1.15rem;
+  font-weight: 950;
+}
+
+.preview-gallery-figure span {
+  color: #075ea8;
+  font-weight: 900;
+}
+
+.preview-gallery-figure p {
+  color: #334155;
+  line-height: 1.6;
 }
 
 .editorial-form textarea {
