@@ -230,6 +230,7 @@ footer.bg-navy > * {
 
 .btn-primary,
 .btn-secondary {
+  gap: 0.55rem;
   min-height: 44px;
   align-items: center;
   justify-content: center;
@@ -239,6 +240,55 @@ footer.bg-navy > * {
   padding: 0.75rem 1rem;
   text-align: center;
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.ui-icon {
+  fill: none;
+  flex: 0 0 auto;
+  height: 1.15rem;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+  width: 1.15rem;
+}
+
+.nav-link {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.45rem;
+}
+
+.nav-link-icon {
+  align-items: center;
+  background: linear-gradient(135deg, rgba(7, 94, 168, 0.12), rgba(67, 198, 183, 0.1));
+  border: 1px solid rgba(7, 94, 168, 0.18);
+  border-radius: 0.55rem;
+  color: #075ea8;
+  display: inline-flex;
+  height: 1.85rem;
+  justify-content: center;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  width: 1.85rem;
+}
+
+.nav-link:hover .nav-link-icon,
+.nav-link:focus .nav-link-icon,
+.nav-link.is-active .nav-link-icon {
+  background: linear-gradient(135deg, rgba(7, 94, 168, 0.95), rgba(67, 198, 183, 0.84));
+  border-color: rgba(243, 181, 27, 0.42);
+  box-shadow: 0 0 18px rgba(67, 198, 183, 0.22);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-primary .ui-icon,
+.btn-secondary .ui-icon,
+.btn-glass-primary .ui-icon,
+.btn-glass-secondary .ui-icon,
+.logout-button .ui-icon {
+  height: 1.05rem;
+  width: 1.05rem;
 }
 
 .btn-primary {
@@ -982,6 +1032,7 @@ footer.bg-navy > * {
   backdrop-filter: blur(18px) saturate(1.25);
   border-radius: 0.75rem;
   display: inline-flex;
+  gap: 0.55rem;
   font-weight: 900;
   justify-content: center;
   min-height: 46px;
@@ -1438,7 +1489,9 @@ footer.bg-navy > * {
 
 .admin-nav-icon {
   align-items: center;
-  background: rgba(125, 211, 252, 0.13);
+  background:
+    radial-gradient(circle at 35% 20%, rgba(255, 255, 255, 0.34), transparent 34%),
+    linear-gradient(135deg, rgba(125, 211, 252, 0.2), rgba(45, 212, 191, 0.1));
   border: 1px solid rgba(125, 211, 252, 0.26);
   border-radius: 0.65rem;
   color: var(--admin-cyan);
@@ -1449,6 +1502,14 @@ footer.bg-navy > * {
   height: 2.1rem;
   justify-content: center;
   letter-spacing: 0.04em;
+  position: relative;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.admin-nav-icon .ui-icon {
+  filter: drop-shadow(0 0 7px rgba(103, 232, 249, 0.26));
+  height: 1.05rem;
+  width: 1.05rem;
 }
 
 .admin-nav-label,
@@ -1465,6 +1526,18 @@ footer.bg-navy > * {
   color: var(--admin-text);
   box-shadow: inset 3px 0 0 var(--admin-gold);
   transform: translateX(3px);
+}
+
+.admin-nav-panel a:hover .admin-nav-icon,
+.admin-nav-panel a:focus .admin-nav-icon,
+.admin-nav-panel a.is-active .admin-nav-icon {
+  background:
+    radial-gradient(circle at 35% 20%, rgba(255, 255, 255, 0.52), transparent 34%),
+    linear-gradient(135deg, rgba(14, 165, 233, 0.55), rgba(45, 212, 191, 0.35));
+  border-color: rgba(250, 204, 21, 0.42);
+  box-shadow: 0 0 22px rgba(103, 232, 249, 0.22);
+  color: #ffffff;
+  transform: scale(1.04);
 }
 
 .admin-sidebar-collapsed .admin-workspace {
@@ -1598,6 +1671,34 @@ footer.bg-navy > * {
   text-decoration: none;
   position: relative;
   transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.module-card-icon {
+  align-items: center;
+  background:
+    radial-gradient(circle at 35% 20%, rgba(255, 255, 255, 0.42), transparent 36%),
+    linear-gradient(135deg, rgba(14, 165, 233, 0.32), rgba(45, 212, 191, 0.18));
+  border: 1px solid rgba(125, 211, 252, 0.34);
+  border-radius: 0.85rem;
+  color: #bff7ff;
+  display: inline-flex;
+  height: 2.6rem;
+  justify-content: center;
+  margin-bottom: 0.35rem;
+  width: 2.6rem;
+}
+
+.module-card-icon .ui-icon {
+  filter: drop-shadow(0 0 10px rgba(103, 232, 249, 0.28));
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.admin-module-card:hover .module-card-icon,
+.admin-module-card:focus .module-card-icon {
+  border-color: rgba(250, 204, 21, 0.48);
+  box-shadow: 0 0 30px rgba(103, 232, 249, 0.22);
+  color: #ffffff;
 }
 
 .admin-module-card::after {
@@ -2627,15 +2728,25 @@ td {
 
 .feature-icon {
   align-items: center;
-  background: var(--gold);
-  border-radius: 0.375rem;
-  color: #1f2937;
+  background:
+    radial-gradient(circle at 35% 20%, rgba(255, 255, 255, 0.54), transparent 36%),
+    linear-gradient(135deg, rgba(243, 181, 27, 0.95), rgba(67, 198, 183, 0.78));
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 0.75rem;
+  box-shadow: 0 14px 30px rgba(7, 94, 168, 0.16), 0 0 20px rgba(67, 198, 183, 0.16);
+  color: #062039;
   display: inline-flex;
   font-weight: 950;
-  height: 2.25rem;
+  height: 2.65rem;
   justify-content: center;
   margin-bottom: 1rem;
-  width: 2.25rem;
+  width: 2.65rem;
+}
+
+.feature-icon .ui-icon {
+  height: 1.28rem;
+  stroke-width: 2;
+  width: 1.28rem;
 }
 
 .feature-card h3,

@@ -46,6 +46,67 @@ function route(path = "") {
   return fromRoot(path);
 }
 
+const siteIconPaths = {
+  home: '<path d="M4 10.8 12 4l8 6.8V20a1 1 0 0 1-1 1h-5v-5h-4v5H5a1 1 0 0 1-1-1v-9.2Z"/><path d="M9.5 21v-6h5v6"/>',
+  institution: '<path d="M5 10.5 12 6l7 4.5"/><path d="M6 10.5v8.5h12v-8.5"/><path d="M9 19v-5h6v5"/><path d="M10 6V3.5h4V6"/>',
+  catalogue: '<path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H20v15.5H7.5A2.5 2.5 0 0 0 5 21V5.5Z"/><path d="M5 18.5A2.5 2.5 0 0 1 7.5 16H20"/><path d="M9 7h7M9 10h5"/>',
+  gallery: '<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-11Z"/><path d="m5.5 16 4-4a1.2 1.2 0 0 1 1.7 0l2.3 2.3 1-1a1.2 1.2 0 0 1 1.7 0l2.3 2.3"/><path d="M15.5 8h.01"/>',
+  events: '<path d="M7 3v3M17 3v3M4 9h16"/><path d="M5.5 5h13A1.5 1.5 0 0 1 20 6.5v12A1.5 1.5 0 0 1 18.5 20h-13A1.5 1.5 0 0 1 4 18.5v-12A1.5 1.5 0 0 1 5.5 5Z"/><path d="M8 13h3M8 16h6"/>',
+  publications: '<path d="M6 4h9l3 3v13H6V4Z"/><path d="M14 4v4h4"/><path d="M9 11h6M9 14h6M9 17h4"/>',
+  adherent: '<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/><path d="M16.5 13.5 19 16l3-4"/>',
+  admin: '<path d="M12 3 20 6.5v5.8c0 4.3-3.1 7.4-8 8.7-4.9-1.3-8-4.4-8-8.7V6.5L12 3Z"/><path d="M9 12l2 2 4-4"/>',
+  login: '<path d="M9 7V5.5A2.5 2.5 0 0 1 11.5 3h6A2.5 2.5 0 0 1 20 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-6A2.5 2.5 0 0 1 9 18.5V17"/><path d="M4 12h10"/><path d="m11 9 3 3-3 3"/>',
+  logout: '<path d="M15 7V5.5A2.5 2.5 0 0 0 12.5 3h-6A2.5 2.5 0 0 0 4 5.5v13A2.5 2.5 0 0 0 6.5 21h6A2.5 2.5 0 0 0 15 18.5V17"/><path d="M10 12h10"/><path d="m17 9 3 3-3 3"/>',
+  search: '<path d="m20 20-4.2-4.2"/><circle cx="11" cy="11" r="6"/>',
+  reserve: '<path d="M6 4h12v16l-6-3-6 3V4Z"/><path d="M9 8h6M9 11h4"/>',
+  payment: '<path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Z"/><path d="M4 9h16M8 15h3"/>',
+  capacity: '<path d="M5 19a7 7 0 0 1 14 0"/><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M19 8v4M21 10h-4"/>',
+  roles: '<path d="M12 3 20 6.5v5.8c0 4.3-3.1 7.4-8 8.7-4.9-1.3-8-4.4-8-8.7V6.5L12 3Z"/><path d="M12 8v4l2.5 1.5"/>',
+  upload: '<path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><path d="M5 17v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2"/>',
+  preview: '<path d="M2.4 11.27c.88-1.54 4.15-6.42 9.6-6.42s8.72 4.88 9.6 6.42c.16.28.16.64 0 .92-.88 1.54-4.15 6.42-9.6 6.42s-8.72-4.88-9.6-6.42a.94.94 0 0 1 0-.92Z"/><path d="M12 14.7a2.7 2.7 0 1 0 0-5.4 2.7 2.7 0 0 0 0 5.4Z"/>',
+  publish: '<path d="M4 12 20 4l-4 16-4-7-8-1Z"/><path d="m12 13 8-9"/>',
+  save: '<path d="M5 4h12l2 2v14H5V4Z"/><path d="M8 4v6h8V4"/><path d="M8 17h8"/>',
+  education: '<path d="M4 6.5 12 3l8 3.5-8 3.5-8-3.5Z"/><path d="M6.5 8v5.5c1.7 1.6 3.5 2.4 5.5 2.4s3.8-.8 5.5-2.4V8"/><path d="M20 6.5v7"/>',
+  formation: '<path d="M5 4h14v16H5V4Z"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="M17 4v16"/>',
+  responsibility: '<path d="M12 4v16"/><path d="M6 8h12"/><path d="M8 8l-3 6h6L8 8Z"/><path d="M16 8l-3 6h6l-3-6Z"/>',
+  external: '<path d="M9 5H5v14h14v-4"/><path d="M13 5h6v6"/><path d="m11 13 8-8"/>',
+  share: '<path d="M18 8a3 3 0 1 0-2.83-4"/><path d="M6 15a3 3 0 1 0 2.83 4"/><path d="M8.6 15.9 15.4 8.1"/><path d="M8.6 8.1 15.4 15.9"/>',
+  menu: '<path d="M4 6h16M4 12h16M4 18h16"/>'
+};
+
+function iconSvg(name, className = "ui-icon") {
+  const path = siteIconPaths[name] || siteIconPaths.external;
+  return `<svg class="${className}" viewBox="0 0 24 24" aria-hidden="true">${path}</svg>`;
+}
+
+function getIconNameForLabel(label = "") {
+  const normalized = label.trim().toLowerCase();
+  if (normalized.includes("accueil") || normalized.includes("vue")) return "home";
+  if (normalized.includes("éducation") || normalized.includes("education")) return "education";
+  if (normalized === "accès" || normalized === "acces") return "education";
+  if (normalized.includes("formation")) return "formation";
+  if (normalized.includes("responsabilité") || normalized.includes("responsabilite")) return "responsibility";
+  if (normalized.includes("institution")) return "institution";
+  if (normalized.includes("catalogue")) return "catalogue";
+  if (normalized.includes("galerie") || normalized.includes("photo")) return "gallery";
+  if (normalized.includes("événement") || normalized.includes("evenement") || normalized.includes("agenda") || normalized.includes("conférence")) return "events";
+  if (normalized.includes("blog") || normalized.includes("publication")) return "publications";
+  if (normalized.includes("adhérent") || normalized.includes("adherent")) return "adherent";
+  if (normalized.includes("admin")) return "admin";
+  if (normalized.includes("connexion") || normalized.includes("connecter")) return "login";
+  if (normalized.includes("déconnexion") || normalized.includes("deconnexion")) return "logout";
+  if (normalized.includes("capacité") || normalized.includes("pointage")) return "capacity";
+  if (normalized.includes("paiement")) return "payment";
+  if (normalized.includes("rôle") || normalized.includes("accès") || normalized.includes("compte")) return "roles";
+  if (normalized.includes("téléverser") || normalized.includes("importer")) return "upload";
+  if (normalized.includes("prévisualiser") || normalized.includes("aperçu")) return "preview";
+  if (normalized.includes("publier")) return "publish";
+  if (normalized.includes("enregistrer") || normalized.includes("modifier") || normalized.includes("créer") || normalized.includes("activer")) return "save";
+  if (normalized.includes("partager")) return "share";
+  if (normalized.includes("réservation")) return "reserve";
+  return "external";
+}
+
 function resolveAssetPath(path) {
   if (!path) return "";
   if (/^(https?:|data:|blob:|\/)/.test(path)) return path;
@@ -348,6 +409,37 @@ function syncSessionNavigation() {
     wrapper.className = "grid gap-3";
     wrapper.innerHTML = sessionMarkup;
     menu.insertBefore(wrapper, languageSelect);
+  });
+}
+
+function setupSiteIconography() {
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    if (link.dataset.iconReady === "true") return;
+    const label = link.textContent.trim();
+    link.dataset.iconReady = "true";
+    link.insertAdjacentHTML("afterbegin", `<span class="nav-link-icon">${iconSvg(getIconNameForLabel(label))}</span>`);
+  });
+
+  document.querySelectorAll(".btn-primary, .btn-secondary, .btn-glass-primary, .btn-glass-secondary, .logout-button").forEach((button) => {
+    if (button.dataset.iconReady === "true" || button.querySelector(".ui-icon")) return;
+    const label = button.textContent.trim();
+    button.dataset.iconReady = "true";
+    button.insertAdjacentHTML("afterbegin", iconSvg(getIconNameForLabel(label)));
+  });
+
+  document.querySelectorAll(".feature-icon").forEach((icon) => {
+    if (icon.dataset.iconReady === "true") return;
+    const container = icon.closest("a, article") || icon.parentElement;
+    const label = container?.querySelector("h2, h3")?.textContent || icon.textContent;
+    icon.dataset.iconReady = "true";
+    icon.innerHTML = iconSvg(getIconNameForLabel(label), "ui-icon feature-svg");
+  });
+
+  document.querySelectorAll(".admin-module-card").forEach((card) => {
+    if (card.dataset.iconReady === "true") return;
+    const label = card.querySelector("strong")?.textContent || card.textContent;
+    card.dataset.iconReady = "true";
+    card.insertAdjacentHTML("afterbegin", `<span class="module-card-icon">${iconSvg(getIconNameForLabel(label))}</span>`);
   });
 }
 
@@ -1775,16 +1867,16 @@ function setupAdminSidebar() {
 
   const navLinks = panel.querySelectorAll("nav a");
   const iconMap = {
-    "Vue générale": "VG",
-    "Capacité & pointage": "CP",
-    Catalogue: "CA",
-    Événements: "EV",
-    Blog: "PU",
-    Publications: "PU",
-    Galerie: "GA",
-    Paiements: "PA",
-    Rôles: "RO",
-    "Comptes & accès": "CA"
+    "Vue générale": "home",
+    "Capacité & pointage": "capacity",
+    Catalogue: "catalogue",
+    Événements: "events",
+    Blog: "publications",
+    Publications: "publications",
+    Galerie: "gallery",
+    Paiements: "payment",
+    Rôles: "roles",
+    "Comptes & accès": "roles"
   };
   const shortLabelMap = {
     "Vue générale": "Vue",
@@ -1804,7 +1896,7 @@ function setupAdminSidebar() {
     link.dataset.label = label;
     link.dataset.shortLabel = shortLabelMap[label] || label;
     link.setAttribute("title", label);
-    link.innerHTML = `<span class="admin-nav-icon" aria-hidden="true">${iconMap[label] || label.slice(0, 2).toUpperCase()}</span><span class="admin-nav-label" data-short-label="${link.dataset.shortLabel}">${label}</span>`;
+    link.innerHTML = `<span class="admin-nav-icon" aria-hidden="true">${iconSvg(iconMap[label] || getIconNameForLabel(label))}</span><span class="admin-nav-label" data-short-label="${link.dataset.shortLabel}">${label}</span>`;
   });
 
   const toggle = document.createElement("button");
@@ -3292,12 +3384,14 @@ async function hydrate({ loadRemote = true } = {}) {
   renderEvents();
   renderPosts();
   renderGallery();
+  setupSiteIconography();
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadAuthState();
   renderSharedLayout();
   syncSessionNavigation();
+  setupSiteIconography();
   const authorized = requireSession();
   markCurrentPage();
   setupNavigation();
@@ -3328,6 +3422,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await hydrate();
   await hydrateAdherentSpace();
   await hydrateAdminModule();
+  setupSiteIconography();
   setupFlyerLightbox();
   setupBlogInteractions();
   setupGalleryLightbox();
