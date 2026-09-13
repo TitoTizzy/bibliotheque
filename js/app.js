@@ -1195,8 +1195,82 @@ function getPreviewImageUrl(form) {
 }
 
 function getPreviewValue(form, selector, fallback = "") {
-  const value = form.querySelector(selector)?.value?.trim();
+  const element = form.querySelector(selector);
+  const value = element?.isContentEditable ? element.textContent?.trim() : element?.value?.trim();
   return value || fallback;
+}
+
+function sanitizeRichEditorHtml(html) {
+  const template = document.createElement("template");
+  template.innerHTML = html || "";
+  template.content.querySelectorAll("script, style, iframe, object, embed").forEach((node) => node.remove());
+  template.content.querySelectorAll("*").forEach((node) => {
+    Array.from(node.attributes).forEach((attribute) => {
+      const name = attribute.name.toLowerCase();
+      const value = attribute.value.trim();
+      if (name.startsWith("on")) node.removeAttribute(attribute.name);
+      if ((name === "href" || name === "src") && /^javascript:/i.test(value)) {
+        node.removeAttribute(attribute.name);
+      }
+    });
+  });
+  return template.innerHTML.trim();
+}
+
+function getPreviewRichContent(form) {
+  const editor = form.querySelector("[data-rich-editor]");
+  const hiddenInput = form.querySelector("[data-rich-editor-input]");
+  const html = sanitizeRichEditorHtml(editor?.innerHTML || hiddenInput?.value || "");
+  const text = (editor?.textContent || hiddenInput?.value || "").trim();
+  return {
+    html: html || `<p>${escapeHtml(text || "Contenu de la publication")}</p>`,
+    text: text || "Contenu de la publication"
+  };
+}
+
+function setupRichArticleEditor() {
+  document.querySelectorAll("[data-rich-editor-wrapper]").forEach((wrapper) => {
+    const editor = wrapper.querySelector("[data-rich-editor]");
+    const hiddenInput = wrapper.querySelector("[data-rich-editor-input]");
+    const imageInput = wrapper.querySelector("[data-editor-image-input]");
+    const imageButton = wrapper.querySelector("[data-editor-image]");
+    if (!editor || !hiddenInput) return;
+
+    const syncEditor = () => {
+      hiddenInput.value = sanitizeRichEditorHtml(editor.innerHTML);
+    };
+
+    const runCommand = (command, value = null) => {
+      editor.focus();
+      document.execCommand(command, false, value);
+      syncEditor();
+    };
+
+    wrapper.querySelectorAll("[data-editor-command]").forEach((control) => {
+      const eventName = control.matches("select, input[type='color']") ? "change" : "click";
+      control.addEventListener(eventName, () => {
+        const command = control.dataset.editorCommand;
+        const value = control.matches("select, input[type='color']") ? control.value : control.dataset.editorValue || null;
+        if (command) runCommand(command, value);
+      });
+    });
+
+    imageButton?.addEventListener("click", () => imageInput?.click());
+    imageInput?.addEventListener("change", () => {
+      const file = imageInput.files?.[0];
+      if (!file || !file.type.startsWith("image/")) return;
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        runCommand("insertImage", reader.result);
+        imageInput.value = "";
+      });
+      reader.readAsDataURL(file);
+    });
+
+    editor.addEventListener("input", syncEditor);
+    editor.addEventListener("blur", syncEditor);
+    syncEditor();
+  });
 }
 
 function renderEventPreview(form) {
@@ -1243,9 +1317,8 @@ function renderPostPreview(form) {
   const category = getPreviewValue(form, "[data-preview-category]", "Publication");
   const author = getPreviewValue(form, "[data-preview-author]", "Auteur");
   const auditor = getPreviewValue(form, "[data-preview-auditor]", "Relecteur");
-  const content = getPreviewValue(form, "[data-preview-description]", "Contenu de la publication");
+  const content = getPreviewRichContent(form);
   const cover = getPreviewImageUrl(form);
-  const excerpt = content.length > 170 ? `${content.slice(0, 170)}...` : content;
   const coverMarkup = cover
     ? `<img class="blog-cover" src="${cover}" alt="${escapeHtml(title)}" />`
     : `<div class="blog-cover preview-empty-media">Image de couverture non sélectionnée</div>`;
@@ -1258,7 +1331,7 @@ function renderPostPreview(form) {
         <time>${new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium" }).format(new Date())}</time>
       </div>
       <h3 class="mt-4 text-xl">${escapeHtml(title)}</h3>
-      <p>${escapeHtml(excerpt)}</p>
+      <div class="preview-rich-content">${content.html}</div>
       <dl class="mt-5 grid gap-3 text-sm">
         <div><dt class="font-bold text-slate-500">Auteur</dt><dd class="font-semibold text-navy">${escapeHtml(author)}</dd></div>
         <div><dt class="font-bold text-slate-500">Relecture</dt><dd class="font-semibold text-navy">${escapeHtml(auditor)}</dd></div>
@@ -3235,6 +3308,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupAdminSidebar();
   setupCustomAdminSelects();
   setupAdminUploadLimits();
+  setupRichArticleEditor();
   setupAdminPublishPreview();
   setupBookDetailsDialog();
   const catalogFilters = document.querySelector("#catalog-filters");

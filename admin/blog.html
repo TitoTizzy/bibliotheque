@@ -19,7 +19,59 @@
         <div class="admin-main-grid">
           <section class="admin-panel wide">
             <div class="dash-card-head"><div><p class="eyebrow">Édition</p><h2>Composer une publication</h2></div><span class="status-pill warning">Brouillon</span></div>
-            <form class="dash-form editorial-form" data-preview-form="post"><label><span>Titre</span><input data-preview-title placeholder="Titre de la publication" /></label><label><span>Catégorie</span><select data-preview-category><option>Sélectionner une catégorie</option></select></label><label><span>Auteur</span><input data-preview-author placeholder="Nom de l'auteur" /></label><label><span>Relecteur</span><input data-preview-auditor placeholder="Nom du relecteur" /></label><label class="full"><span>Image de couverture</span><input data-preview-image type="file" accept="image/*" /></label><label class="full"><span>Galerie liée</span><input type="file" accept="image/*" multiple data-max-files="20" /><small data-upload-limit-message>20 photos maximum par publication.</small></label><label class="full"><span>Contenu</span><textarea data-preview-description placeholder="Contenu de la publication"></textarea></label><button class="btn-glass-secondary full" type="button" data-open-preview="post">Prévisualiser</button><button class="btn-glass-primary full" type="button">Publier</button></form>
+            <form class="dash-form editorial-form" data-preview-form="post">
+              <label><span>Titre</span><input data-preview-title placeholder="Titre de la publication" /></label>
+              <label><span>Catégorie</span><select data-preview-category><option>Sélectionner une catégorie</option></select></label>
+              <label><span>Auteur</span><input data-preview-author placeholder="Nom de l'auteur" /></label>
+              <label><span>Relecteur</span><input data-preview-auditor placeholder="Nom du relecteur" /></label>
+              <label class="full"><span>Image de couverture</span><input data-preview-image type="file" accept="image/*" /></label>
+              <label class="full"><span>Galerie liée</span><input type="file" accept="image/*" multiple data-max-files="20" /><small data-upload-limit-message>20 photos maximum par publication.</small></label>
+              <div class="article-editor full" data-rich-editor-wrapper>
+                <span>Contenu</span>
+                <div class="article-toolbar" data-rich-editor-toolbar aria-label="Mise en forme de la publication">
+                  <select data-editor-command="fontName" aria-label="Police">
+                    <option value="Arial">Arial</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Trebuchet MS">Trebuchet MS</option>
+                  </select>
+                  <select data-editor-command="fontSize" aria-label="Taille">
+                    <option value="2">10</option>
+                    <option value="3" selected>12</option>
+                    <option value="4">14</option>
+                    <option value="5">18</option>
+                    <option value="6">24</option>
+                    <option value="7">32</option>
+                  </select>
+                  <button type="button" data-editor-command="bold" aria-label="Gras" title="Gras"><strong>B</strong></button>
+                  <button type="button" data-editor-command="italic" aria-label="Italique" title="Italique"><em>I</em></button>
+                  <button type="button" data-editor-command="underline" aria-label="Souligné" title="Souligné"><u>U</u></button>
+                  <button type="button" data-editor-command="strikeThrough" aria-label="Barré" title="Barré"><s>ab</s></button>
+                  <button type="button" data-editor-command="subscript" aria-label="Indice" title="Indice">x<sub>2</sub></button>
+                  <button type="button" data-editor-command="superscript" aria-label="Exposant" title="Exposant">x<sup>2</sup></button>
+                  <label class="editor-color" title="Couleur du texte"><span>A</span><input type="color" value="#075ea8" data-editor-command="foreColor" aria-label="Couleur du texte" /></label>
+                  <label class="editor-color" title="Surlignage"><span></span><input type="color" value="#fff2a8" data-editor-command="hiliteColor" aria-label="Surlignage" /></label>
+                  <button type="button" data-editor-command="insertUnorderedList" aria-label="Liste à puces" title="Liste à puces">•</button>
+                  <button type="button" data-editor-command="insertOrderedList" aria-label="Liste numérotée" title="Liste numérotée">1.</button>
+                  <button type="button" data-editor-command="outdent" aria-label="Réduire le retrait" title="Réduire le retrait">←</button>
+                  <button type="button" data-editor-command="indent" aria-label="Augmenter le retrait" title="Augmenter le retrait">→</button>
+                  <button type="button" data-editor-command="justifyLeft" aria-label="Aligner à gauche" title="Aligner à gauche">☰</button>
+                  <button type="button" data-editor-command="justifyCenter" aria-label="Centrer" title="Centrer">≡</button>
+                  <button type="button" data-editor-command="justifyRight" aria-label="Aligner à droite" title="Aligner à droite">☷</button>
+                  <button type="button" data-editor-command="justifyFull" aria-label="Justifier" title="Justifier">▤</button>
+                  <button type="button" data-editor-command="removeFormat" aria-label="Effacer la mise en forme" title="Effacer la mise en forme">Tx</button>
+                  <button class="editor-image-button" type="button" data-editor-image aria-label="Insérer une image" title="Insérer une image">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13Z"/><path d="m5 16 4.2-4.2a1.2 1.2 0 0 1 1.7 0L14 15l1.1-1.1a1.2 1.2 0 0 1 1.7 0L20 17"/><path d="M15 8h.01"/></svg>
+                  </button>
+                  <input class="sr-only" type="file" accept="image/*" data-editor-image-input />
+                </div>
+                <div class="rich-editor-surface" contenteditable="true" data-rich-editor data-placeholder="Rédiger la publication ici..."></div>
+                <textarea class="sr-only" data-rich-editor-input data-preview-description></textarea>
+              </div>
+              <button class="btn-glass-secondary full" type="button" data-open-preview="post">Prévisualiser</button>
+              <button class="btn-glass-primary full" type="button">Publier</button>
+            </form>
           </section>
           <section class="admin-panel admin-overview-panel"><div class="responsive-table"><table><thead><tr><th>Publication</th><th>Auteur</th><th>Statut</th><th>Galerie</th></tr></thead><tbody><tr><td colspan="4">Aucune publication enregistrée.</td></tr></tbody></table></div></section>
         </div>
