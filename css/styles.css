@@ -3987,8 +3987,6 @@ select {
 }
 
 .hero-band {
-  animation: bepHeroBreath 13s ease-in-out infinite;
-  background-size: 180% 180%, 135% 135%, 180% 180%;
   position: relative;
 }
 
@@ -4003,13 +4001,11 @@ select {
 }
 
 .hero-panel {
-  animation: bepFloat 7s ease-in-out infinite;
-  transition: box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-panel:hover {
   box-shadow: 0 24px 70px rgba(18, 50, 74, 0.2);
-  transform: translateY(-4px);
 }
 
 .hero-image-wrap > img,

@@ -417,7 +417,9 @@ function setupSiteIconography() {
     if (link.dataset.iconReady === "true") return;
     const label = link.textContent.trim();
     link.dataset.iconReady = "true";
-    link.insertAdjacentHTML("afterbegin", `<span class="nav-link-icon">${iconSvg(getIconNameForLabel(label))}</span>`);
+    if (link.dataset.nav !== "galerie") {
+      link.insertAdjacentHTML("afterbegin", `<span class="nav-link-icon">${iconSvg(getIconNameForLabel(label))}</span>`);
+    }
   });
 
   document.querySelectorAll(".btn-primary, .btn-secondary, .btn-glass-primary, .btn-glass-secondary, .logout-button").forEach((button) => {
@@ -477,7 +479,6 @@ function renderSharedLayout() {
       <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-8" aria-label="Navigation principale">
         <a href="${route("index.html")}" class="flex min-w-0 items-center gap-3" aria-label="Bibliothèque Edgard Petit">
           <img src="${route("assets/logo.png")}" alt="Logo Bibliothèque Edgard Petit" class="h-12 w-auto shrink-0" />
-          <span class="hidden text-sm font-semibold uppercase text-navy sm:block">Bibliothèque Edgard Petit</span>
         </a>
         <button id="mobile-menu-button" class="icon-button lg:hidden" type="button" aria-expanded="false" aria-controls="mobile-panel" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
         <div id="primary-menu" class="hidden items-center gap-4 lg:flex">
