@@ -21,6 +21,7 @@ const state = {
   adminCatalogBooks: [],
   catalogPage: 1,
   adminCatalogPage: 1,
+  galleryAlbum: "",
   auth: {
     session: null,
     profile: null,
@@ -686,6 +687,47 @@ function setupGalleryFilters() {
   renderOptions(document.querySelector("#gallery-album-filter"), albums);
 }
 
+function getSelectedGalleryAlbum() {
+  return state.galleryAlbum || document.querySelector("#gallery-album-filter")?.value || "";
+}
+
+function getGalleryAlbums(items = getPublishedGalleryItems()) {
+  const albums = new Map();
+  items.forEach((item) => {
+    const name = item.album || "Vie de la bibliothèque";
+    const existing = albums.get(name) || {
+      id: slugifyMediaSegment(name),
+      name,
+      photos: [],
+      cover: item,
+      publishedAt: item.publishedAt
+    };
+    existing.photos.push(item);
+    if (new Date(item.publishedAt) > new Date(existing.publishedAt)) {
+      existing.cover = item;
+      existing.publishedAt = item.publishedAt;
+    }
+    albums.set(name, existing);
+  });
+
+  return [...albums.values()]
+    .map((album) => ({
+      ...album,
+      description: album.photos.find((photo) => photo.description)?.description || "",
+      photoCount: album.photos.length
+    }))
+    .sort((first, second) => first.name.localeCompare(second.name, "fr", { sensitivity: "base" }));
+}
+
+function getFilteredGalleryAlbums() {
+  const query = document.querySelector("#gallery-search")?.value.trim().toLowerCase() || "";
+  const selectedAlbum = getSelectedGalleryAlbum();
+  return getGalleryAlbums().filter((album) => {
+    const haystack = `${album.name} ${album.description} ${album.photos.map((photo) => photo.title).join(" ")}`.toLowerCase();
+    return (!query || haystack.includes(query)) && (!selectedAlbum || album.name === selectedAlbum);
+  });
+}
+
 function getFilteredBooks() {
   const query = document.querySelector("#book-search")?.value.trim().toLowerCase() || "";
   const category = document.querySelector("#category-filter")?.value || "";
@@ -963,7 +1005,7 @@ function getFilteredEvents() {
 
 function getFilteredGalleryItems() {
   const query = document.querySelector("#gallery-search")?.value.trim().toLowerCase() || "";
-  const album = document.querySelector("#gallery-album-filter")?.value || "";
+  const album = getSelectedGalleryAlbum();
 
   return getPublishedGalleryItems().filter((item) => {
     const haystack = `${item.title} ${item.description} ${item.album}`.toLowerCase();
@@ -1258,10 +1300,54 @@ function renderPosts() {
 function renderGallery() {
   const grid = document.querySelector("#gallery-grid");
   if (!grid) return;
+  const albumsGrid = document.querySelector("#gallery-albums");
+  const albumCount = document.querySelector("#gallery-album-count");
+  const currentAlbum = document.querySelector("#gallery-current-album");
+  const currentTitle = document.querySelector("[data-gallery-current-title]");
+  const currentCount = document.querySelector("[data-gallery-current-count]");
+  const selectedAlbum = getSelectedGalleryAlbum();
+
+  if (!selectedAlbum) {
+    const albums = getFilteredGalleryAlbums();
+    grid.innerHTML = "";
+    grid.classList.add("hidden");
+    currentAlbum?.classList.add("hidden");
+    albumsGrid?.classList.remove("hidden");
+    if (albumCount) albumCount.textContent = `${albums.length} album${albums.length > 1 ? "s" : ""}`;
+    if (!albumsGrid) return;
+    if (!albums.length) {
+      albumsGrid.innerHTML = `<p class="gallery-empty">Aucun album photo publié ne correspond aux filtres.</p>`;
+      return;
+    }
+    albumsGrid.innerHTML = albums
+      .map((album) => `
+        <article class="gallery-album-card">
+          <button type="button" data-gallery-album-open="${escapeHtml(album.name)}" aria-label="Ouvrir l'album ${escapeHtml(album.name)}">
+            <img src="${resolveAssetPath(album.cover.src)}" alt="${escapeHtml(album.cover.alt || album.name)}" loading="lazy" />
+            <span class="gallery-album-icon">${iconSvg("gallery")}</span>
+          </button>
+          <div>
+            <p>${album.photoCount} photo${album.photoCount > 1 ? "s" : ""}</p>
+            <h3>${escapeHtml(album.name)}</h3>
+            ${album.description ? `<span>${escapeHtml(album.description)}</span>` : ""}
+          </div>
+        </article>
+      `)
+      .join("");
+    return;
+  }
 
   const filteredItems = getFilteredGalleryItems();
+  const albumLabel = selectedAlbum || "Album photo";
+  albumsGrid?.classList.add("hidden");
+  grid.classList.remove("hidden");
+  currentAlbum?.classList.remove("hidden");
+  if (albumCount) albumCount.textContent = `${getGalleryAlbums().length} album${getGalleryAlbums().length > 1 ? "s" : ""}`;
+  if (currentTitle) currentTitle.textContent = albumLabel;
+  if (currentCount) currentCount.textContent = `${filteredItems.length} photo${filteredItems.length > 1 ? "s" : ""}`;
+
   if (!filteredItems.length) {
-    grid.innerHTML = `<p class="rounded-lg border border-slate-200 bg-white p-5 text-slate-600">Aucune photo publiée ne correspond aux filtres.</p>`;
+    grid.innerHTML = `<p class="gallery-empty">Aucune photo publiée ne correspond aux filtres.</p>`;
     return;
   }
 
@@ -1280,6 +1366,39 @@ function renderGallery() {
       `
     )
     .join("");
+}
+
+function setupGalleryAlbumInteractions() {
+  if (!document.querySelector("#gallery-grid")) return;
+  const filters = document.querySelector("#gallery-filters");
+  const albumSelect = document.querySelector("#gallery-album-filter");
+
+  filters?.addEventListener("input", (event) => {
+    if (event.target === albumSelect) state.galleryAlbum = albumSelect?.value || "";
+    if (event.target?.id === "gallery-search" && !albumSelect?.value) state.galleryAlbum = "";
+    renderGallery();
+  });
+  filters?.addEventListener("change", (event) => {
+    if (event.target === albumSelect) state.galleryAlbum = albumSelect?.value || "";
+    renderGallery();
+  });
+  document.addEventListener("click", (event) => {
+    const albumButton = event.target.closest("[data-gallery-album-open]");
+    if (albumButton) {
+      state.galleryAlbum = albumButton.dataset.galleryAlbumOpen || "";
+      if (albumSelect) albumSelect.value = state.galleryAlbum;
+      renderGallery();
+      document.querySelector("#gallery-current-album")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    if (event.target.closest("[data-gallery-back]")) {
+      state.galleryAlbum = "";
+      if (albumSelect) albumSelect.value = "";
+      renderGallery();
+      document.querySelector("#gallery-filters")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
 }
 
 function getPreviewImageUrl(form) {
@@ -3559,6 +3678,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupRichArticleEditor();
   setupAdminPublishPreview();
   setupBookDetailsDialog();
+  setupGalleryAlbumInteractions();
   const catalogFilters = document.querySelector("#catalog-filters");
   const updateCatalog = () => {
     state.catalogPage = 1;
@@ -3571,7 +3691,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (bookButton) openBookDetails(bookButton.dataset.bookOpen);
   });
   document.querySelector("#event-filters")?.addEventListener("input", renderEvents);
-  document.querySelector("#gallery-filters")?.addEventListener("input", renderGallery);
   if (!authorized) return;
   await hydrate();
   await hydrateAdherentSpace();

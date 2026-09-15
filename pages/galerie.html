@@ -28,9 +28,25 @@
 
       <section class="mx-auto max-w-7xl px-4 py-16 lg:px-8">
         <form id="gallery-filters" class="mb-8 grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-soft md:grid-cols-3" aria-label="Filtres de la galerie">
-          <label class="field md:col-span-2"><span>Recherche</span><input id="gallery-search" type="search" placeholder="Titre, description, album..." /></label>
+          <label class="field md:col-span-2"><span>Recherche</span><input id="gallery-search" type="search" placeholder="Album, titre, description..." /></label>
           <label class="field"><span>Album</span><select id="gallery-album-filter"></select></label>
         </form>
+        <div class="gallery-albums-head">
+          <div>
+            <p class="eyebrow">Albums photo</p>
+            <h2>Collections publiées</h2>
+          </div>
+          <span id="gallery-album-count">0 album</span>
+        </div>
+        <div id="gallery-albums" class="gallery-albums" aria-label="Albums photo"></div>
+        <div id="gallery-current-album" class="gallery-current-album hidden">
+          <button class="btn-secondary" type="button" data-gallery-back>Voir tous les albums</button>
+          <div>
+            <p class="eyebrow">Album sélectionné</p>
+            <h2 data-gallery-current-title></h2>
+          </div>
+          <span data-gallery-current-count></span>
+        </div>
         <div id="gallery-grid" class="gallery-grid" aria-label="Galerie de photos"></div>
       </section>
     </main>
