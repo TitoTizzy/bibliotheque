@@ -2568,6 +2568,158 @@ function chunkRows(rows, size = 400) {
   return chunks;
 }
 
+function slugifyMediaSegment(value) {
+  return `${value || "media"}`
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80) || "media";
+}
+
+function getGalleryFolderAlbum(files) {
+  const firstPath = files[0]?.webkitRelativePath || files[0]?.name || "";
+  const folderName = firstPath.includes("/") ? firstPath.split("/")[0] : "";
+  return folderName || "Album galerie";
+}
+
+function getGalleryPhotoTitle(file) {
+  const rawName = file.name.replace(/\.[^.]+$/, "");
+  const dateMatch = rawName.match(/^(\d{4})(\d{2})(\d{2})[_-]?(\d{2})?(\d{2})?/);
+  if (!dateMatch) {
+    return rawName.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim() || "Photo";
+  }
+  const [, year, month, day, hour, minute] = dateMatch;
+  const date = new Date(`${year}-${month}-${day}T${hour || "00"}:${minute || "00"}:00`);
+  return Number.isNaN(date.getTime())
+    ? rawName
+    : `Photo du ${new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: hour ? "short" : undefined }).format(date)}`;
+}
+
+function getGalleryPhotoShotDate(file) {
+  const rawName = file.name.replace(/\.[^.]+$/, "");
+  const dateMatch = rawName.match(/^(\d{4})(\d{2})(\d{2})[_-]?(\d{2})?(\d{2})?(\d{2})?/);
+  if (!dateMatch) return null;
+  const [, year, month, day, hour = "00", minute = "00", second = "00"] = dateMatch;
+  const date = new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
+function isGalleryImageFile(file) {
+  return ["image/jpeg", "image/png", "image/webp"].includes(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
+}
+
+function getGalleryStoragePath(album, file, index) {
+  const albumSlug = slugifyMediaSegment(album);
+  const relativePath = file.webkitRelativePath || file.name;
+  const safeFileName = file.name.replace(/[^\w.-]+/g, "_");
+  const sourceSlug = slugifyMediaSegment(relativePath.replace(/\.[^.]+$/, ""));
+  return `${albumSlug}/${String(index + 1).padStart(4, "0")}-${sourceSlug}-${safeFileName}`;
+}
+
+function getGalleryImportErrorMessage(error) {
+  const message = `${error?.message || ""}`;
+  const raw = `${message} ${error?.details || ""} ${error?.hint || ""} ${error?.code || ""}`.toLowerCase();
+  if (raw.includes("bucket not found") || raw.includes("not found")) return "Bucket gallery-photos introuvable dans Supabase Storage.";
+  if (raw.includes("row-level security") || raw.includes("rls")) return "Permission Supabase refusée. Vérifiez le rôle du compte et le script SQL 13.";
+  if (raw.includes("source_relative_path") || raw.includes("captured_at") || raw.includes("import_batch_id")) return "Colonnes d'import absentes. Exécutez supabase/13_gallery_folder_import.sql.";
+  if (raw.includes("network") || raw.includes("failed to fetch")) return "Connexion Supabase impossible.";
+  return message ? `Import galerie impossible: ${message}` : "Import galerie impossible pour le moment.";
+}
+
+function setupGalleryFolderImport(client) {
+  const form = document.querySelector("[data-gallery-folder-import]");
+  if (!form || form.dataset.bound === "true") return;
+  form.dataset.bound = "true";
+  const fileInput = form.querySelector("[data-gallery-folder-files]");
+  const albumInput = form.querySelector("[data-gallery-import-album]");
+  const statusInput = form.querySelector("[data-gallery-import-status]");
+  const descriptionInput = form.querySelector("[data-gallery-import-description]");
+  const folderName = form.querySelector("[data-gallery-folder-name]");
+  const countBadge = document.querySelector("[data-gallery-import-count]");
+  const message = form.querySelector("[data-gallery-import-message]");
+
+  const getImageFiles = () => Array.from(fileInput?.files || [])
+    .filter(isGalleryImageFile)
+    .sort((a, b) => (a.webkitRelativePath || a.name).localeCompare(b.webkitRelativePath || b.name, "fr"));
+
+  const updateSelection = () => {
+    const files = getImageFiles();
+    const album = files.length ? getGalleryFolderAlbum(files) : "";
+    if (albumInput && album && !albumInput.value.trim()) albumInput.value = album;
+    if (folderName) folderName.textContent = files.length ? `${album} - ${files.length} photo${files.length > 1 ? "s" : ""}` : "Aucun dossier sélectionné";
+    if (countBadge) countBadge.textContent = `${files.length} photo${files.length > 1 ? "s" : ""}`;
+  };
+
+  fileInput?.addEventListener("change", updateSelection);
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const files = getImageFiles();
+    const album = albumInput?.value.trim() || getGalleryFolderAlbum(files);
+    const description = descriptionInput?.value.trim() || "";
+    const status = statusInput?.value || "draft";
+    const submit = form.querySelector('button[type="submit"]');
+
+    if (!files.length) {
+      showAuthMessage(message, "Sélectionnez un dossier contenant des images JPG, PNG ou WebP.", "error");
+      return;
+    }
+
+    submit.disabled = true;
+    submit.textContent = "Import en cours...";
+    const importBatchId = crypto.randomUUID();
+
+    try {
+      const rows = [];
+      for (const [index, file] of files.entries()) {
+        if (countBadge) countBadge.textContent = `${index + 1}/${files.length}`;
+        const storagePath = getGalleryStoragePath(album, file, index);
+        const upload = await client.storage.from("gallery-photos").upload(storagePath, file, {
+          cacheControl: "31536000",
+          upsert: true
+        });
+        if (upload.error) throw upload.error;
+        rows.push({
+          title: getGalleryPhotoTitle(file),
+          description,
+          album,
+          storage_path: storagePath,
+          alt_text: `${album} - ${getGalleryPhotoTitle(file)}`,
+          status,
+          sort_order: index,
+          source_album: album,
+          source_file_name: file.name,
+          source_relative_path: file.webkitRelativePath || file.name,
+          file_size: file.size,
+          captured_at: getGalleryPhotoShotDate(file),
+          import_batch_id: importBatchId,
+          published_by: state.auth.profile?.id || state.auth.session?.user?.id || null
+        });
+      }
+
+      for (const chunk of chunkRows(rows, 150)) {
+        const { error } = await client.from("gallery_photos").upsert(chunk, { onConflict: "storage_path" });
+        if (error) throw error;
+      }
+
+      showAuthMessage(message, `${rows.length} photo${rows.length > 1 ? "s" : ""} importée${rows.length > 1 ? "s" : ""} dans l'album ${album}.`);
+      form.reset();
+      updateSelection();
+      await renderAdminGallery(client);
+      await loadSupabaseContent();
+      setupGalleryFilters();
+      renderGallery();
+    } catch (error) {
+      console.warn("Import dossier galerie impossible.", error);
+      showAuthMessage(message, getGalleryImportErrorMessage(error), "error");
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "Importer dans la galerie";
+    }
+  });
+}
+
 async function uploadCatalogArchive(client, file) {
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   const safeName = file.name.replace(/[^\w.-]+/g, "_");
@@ -2734,6 +2886,7 @@ async function renderAdminBlog(client) {
 
 async function renderAdminGallery(client) {
   const table = document.querySelector(".admin-overview-panel table");
+  setupGalleryFolderImport(client);
   const photos = await selectAdminRows(client, "gallery_photos", (query) => query.select("*").order("created_at", { ascending: false }).limit(50));
   if (!photos.length) {
     renderEmptyRow(table, 4, "Aucune photo enregistrée.");

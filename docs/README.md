@@ -20,6 +20,7 @@ Plateforme SaaS de gestion pour la Bibliothèque Edgard Petit, projet de l'Organ
 - `js/supabaseClient.js`: emplacement des variables publiques Supabase.
 - `supabase/schema.sql`: tables, enum, triggers, index et politiques RLS de base.
 - `supabase/02_content_modules.sql`: migration complémentaire pour les modules Catalogue, Événements, Blog, Galerie et Storage.
+- `supabase/13_gallery_folder_import.sql`: colonnes et index nécessaires pour importer un dossier complet de photos dans la Galerie.
 
 ## Lancement local
 
@@ -38,3 +39,9 @@ Puis ouvrir `http://localhost:5173`.
 3. Créer les buckets Storage: `blog-gallery`, `blog-covers`, `gallery-photos`, `event-flyers`, `excel-archives` et `payment-proofs`.
 4. Exécuter `supabase/02_content_modules.sql` dans l'éditeur SQL.
 5. Renseigner `SUPABASE_URL` et `SUPABASE_ANON_KEY` dans `js/supabaseClient.js`.
+
+## Import de dossiers Galerie
+
+1. Exécuter `supabase/13_gallery_folder_import.sql` dans l'éditeur SQL Supabase.
+2. Vérifier que le bucket Storage `gallery-photos` existe et que le compte connecté possède `gallery.manage` ou `gallery.publish`.
+3. Dans `admin/galerie.html`, utiliser `Import dossier` pour sélectionner un dossier local. Les images JPG, PNG et WebP sont envoyées dans Storage puis liées à `gallery_photos`.

@@ -17,6 +17,18 @@
       <section class="admin-workspace">
         <aside class="admin-nav-panel"><div class="admin-user-chip"><span class="status-pill success">SuperAdmin</span><strong>ouhhaiti@gmail.com</strong></div><nav><a href="./index.html">Vue générale</a><a href="./capacite.html">Capacité & pointage</a><a href="./catalogue.html">Catalogue</a><a href="./evenements.html">Événements</a><a href="./blog.html">Publications</a><a href="./galerie.html" class="is-active">Galerie</a><a href="./paiements.html">Paiements</a><a href="./roles.html">Comptes & accès</a></nav></aside>
         <div class="admin-main-grid">
+          <section class="admin-panel wide gallery-folder-import-panel">
+            <div class="dash-card-head"><div><p class="eyebrow">Import dossier</p><h2>Alimenter la galerie</h2></div><span class="status-pill info" data-gallery-import-count>0 photo</span></div>
+            <form class="dash-form gallery-folder-import-form" data-gallery-folder-import>
+              <label class="full gallery-folder-drop"><span>Dossier de conférence</span><input type="file" accept="image/jpeg,image/png,image/webp" multiple webkitdirectory directory data-gallery-folder-files /><strong data-gallery-folder-name>Aucun dossier sélectionné</strong></label>
+              <label><span>Album</span><input data-gallery-import-album placeholder="Album détecté automatiquement" /></label>
+              <label><span>Statut</span><select data-gallery-import-status><option value="draft">Brouillon</option><option value="published">Publié</option></select></label>
+              <label class="full"><span>Description</span><input data-gallery-import-description placeholder="Description appliquée aux photos importées" /></label>
+              <button class="btn-glass-primary full" type="submit">Importer dans la galerie</button>
+              <p class="auth-success hidden full" data-gallery-import-message></p>
+            </form>
+            <!-- Note dev: l'import dossier utilise webkitdirectory, upload Storage puis upsert gallery_photos. -->
+          </section>
           <section class="admin-panel">
             <div class="dash-card-head"><div><p class="eyebrow">Publication</p><h2>Nouvelle photo</h2></div><span class="status-pill success">Publique</span></div>
             <form class="dash-form" data-preview-form="gallery"><label><span>Titre</span><input data-preview-title placeholder="Titre de la photo" /></label><label><span>Album</span><select data-preview-category><option>Sélectionner un album</option></select></label><label class="full"><span>Photo</span><input data-preview-image type="file" accept="image/*" /></label><label class="full"><span>Description</span><input data-preview-description placeholder="Description de la photo" /></label><button class="btn-glass-secondary full" type="button" data-open-preview="gallery">Prévisualiser</button><button class="btn-glass-primary full" type="button">Publier la photo</button></form>
