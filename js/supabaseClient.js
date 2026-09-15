@@ -15,5 +15,6 @@ export async function getSupabaseClient() {
 export function getSupabasePublicUrl(bucket, path) {
   if (!SUPABASE_URL || !bucket || !path) return "";
   if (/^(https?:|\.\/|\/)/.test(path)) return path;
-  return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+  const safePath = `${path}`.split("/").map(encodeURIComponent).join("/");
+  return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${safePath}`;
 }

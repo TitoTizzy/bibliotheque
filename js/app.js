@@ -248,6 +248,58 @@ function mapGalleryItem(row) {
   };
 }
 
+function isGalleryStorageImage(name = "") {
+  return /\.(jpe?g|png|webp)$/i.test(name);
+}
+
+function getStorageAlbumName(path = "") {
+  const folder = path.split("/").filter(Boolean)[0] || "Galerie";
+  return folder.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim() || "Galerie";
+}
+
+function getStoragePhotoTitle(path = "") {
+  const name = path.split("/").pop()?.replace(/\.[^.]+$/, "") || "Photo";
+  return name.replace(/^(\d{3,5})[-_]+/, "").replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim() || "Photo";
+}
+
+async function listGalleryStoragePhotos(client, folder = "", depth = 0) {
+  if (depth > 5) return [];
+  const { data, error } = await client.storage.from("gallery-photos").list(folder, {
+    limit: 1000,
+    offset: 0,
+    sortBy: { column: "name", order: "asc" }
+  });
+
+  if (error || !data?.length) {
+    if (error) console.warn("Lecture Storage galerie impossible.", error);
+    return [];
+  }
+
+  const photos = [];
+  for (const entry of data) {
+    const path = [folder, entry.name].filter(Boolean).join("/");
+    const isImage = isGalleryStorageImage(entry.name);
+    const isFolder = !isImage && (!entry.id || !entry.name.includes("."));
+
+    if (isImage) {
+      photos.push({
+        id: `storage-${slugifyMediaSegment(path)}`,
+        title: getStoragePhotoTitle(path),
+        description: "",
+        album: getStorageAlbumName(path),
+        src: getStorageUrl("gallery-photos", path),
+        alt: getStoragePhotoTitle(path),
+        status: "published",
+        publishedAt: entry.created_at || entry.updated_at || new Date().toISOString()
+      });
+    } else if (isFolder) {
+      photos.push(...await listGalleryStoragePhotos(client, path, depth + 1));
+    }
+  }
+
+  return photos;
+}
+
 async function loadSupabaseContent() {
   const client = await getSupabaseClient();
   if (!client) return;
@@ -293,6 +345,9 @@ async function loadSupabaseContent() {
 
     if (!galleryResponse.error && galleryResponse.data?.length) {
       state.content.galleryItems = galleryResponse.data.map(mapGalleryItem);
+    } else {
+      const storagePhotos = await listGalleryStoragePhotos(client);
+      if (storagePhotos.length) state.content.galleryItems = storagePhotos;
     }
   } catch (error) {
     console.warn("Chargement Supabase indisponible, données locales utilisées.", error);
