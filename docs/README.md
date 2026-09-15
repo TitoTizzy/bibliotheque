@@ -45,3 +45,4 @@ Puis ouvrir `http://localhost:5173`.
 1. Exécuter `supabase/13_gallery_folder_import.sql` dans l'éditeur SQL Supabase.
 2. Vérifier que le bucket Storage `gallery-photos` existe et que le compte connecté possède `gallery.manage` ou `gallery.publish`.
 3. Dans `admin/galerie.html`, utiliser `Import dossier` pour sélectionner un dossier local. Les images JPG, PNG et WebP sont envoyées dans Storage puis liées à `gallery_photos`.
+4. Si des photos importées restent invisibles sur le site public, exécuter `supabase/14_publish_gallery_photos.sql` pour publier les photos déjà importées en brouillon.
