@@ -2832,7 +2832,7 @@ function setupGalleryFolderImport(client) {
     const files = getImageFiles();
     const album = albumInput?.value.trim() || getGalleryFolderAlbum(files);
     const description = descriptionInput?.value.trim() || "";
-    const status = statusInput?.value || "draft";
+    const status = statusInput?.value || "published";
     const submit = form.querySelector('button[type="submit"]');
 
     if (!files.length) {

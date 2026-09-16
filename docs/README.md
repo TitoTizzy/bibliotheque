@@ -17,6 +17,7 @@ Plateforme SaaS de gestion pour la Bibliothèque Edgard Petit, projet de l'Organ
 - `js/app.js`: interactions publiques, catalogue, événements, blog et modal d'authentification.
 - `js/i18n.js`: traduction dynamique Français, Créole haïtien et Anglais.
 - `js/data/content.js`: données de démonstration remplaçables par Supabase.
+- `assets/gallery/`: albums photo optimisés pour la vitrine publique, utilisés comme secours quand Supabase ne renvoie aucune photo.
 - `js/supabaseClient.js`: emplacement des variables publiques Supabase.
 - `supabase/schema.sql`: tables, enum, triggers, index et politiques RLS de base.
 - `supabase/02_content_modules.sql`: migration complémentaire pour les modules Catalogue, Événements, Blog, Galerie et Storage.
