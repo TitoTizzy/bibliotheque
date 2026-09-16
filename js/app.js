@@ -1414,8 +1414,7 @@ function renderGallery() {
             <img src="${resolveAssetPath(item.src)}" alt="${item.alt}" loading="lazy" />
           </button>
           <figcaption>
-            <strong>${item.title}</strong>
-            <span>${item.album}</span>
+            <strong>${item.album}</strong>
           </figcaption>
         </figure>
       `
@@ -1730,7 +1729,7 @@ function getGalleryShareUrl(item) {
 
 function getGallerySocialUrl(platform, item) {
   const url = encodeURIComponent(getGalleryShareUrl(item));
-  const text = encodeURIComponent(item.title);
+  const text = encodeURIComponent(item.album || "Album photo");
   if (platform === "whatsapp") return `https://wa.me/?text=${text}%20${url}`;
   if (platform === "twitter") return `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
   return `https://www.facebook.com/sharer/sharer.php?u=${url}`;
@@ -1773,18 +1772,19 @@ function setupGalleryLightbox() {
     const item = activeItems[activeIndex];
     if (!item) return;
     const image = lightbox.querySelector("[data-gallery-image]");
-    image.src = item.src;
+    const imageUrl = resolveAssetPath(item.src);
+    image.src = imageUrl;
     image.alt = item.alt;
-    lightbox.querySelector("[data-gallery-album]").textContent = item.album;
-    lightbox.querySelector("[data-gallery-title]").textContent = item.title;
+    lightbox.querySelector("[data-gallery-album]").textContent = "Album photo";
+    lightbox.querySelector("[data-gallery-title]").textContent = item.album;
     lightbox.querySelector("[data-gallery-description]").textContent = item.description;
     lightbox.querySelector("[data-gallery-whatsapp]").href = getGallerySocialUrl("whatsapp", item);
     lightbox.querySelector("[data-gallery-twitter]").href = getGallerySocialUrl("twitter", item);
     lightbox.querySelector("[data-gallery-facebook]").href = getGallerySocialUrl("facebook", item);
     lightbox.querySelector("[data-gallery-copy]").dataset.galleryCopy = item.id;
     const download = lightbox.querySelector("[data-gallery-download]");
-    download.href = item.src;
-    download.setAttribute("download", item.src.split("/").pop() || "photo.jpg");
+    download.href = imageUrl;
+    download.setAttribute("download", imageUrl.split("/").pop() || "photo.jpg");
     window.location.hash = item.id;
   };
 
