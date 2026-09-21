@@ -1219,8 +1219,70 @@ function renderEvents() {
   });
 }
 
+function renderHomeHighlights() {
+  const eventRoot = document.querySelector("#home-featured-event");
+  const postsRoot = document.querySelector("#home-latest-posts");
+  if (!eventRoot || !postsRoot) return;
+
+  const publicEvents = getPublicEvents();
+  const upcomingEvent = publicEvents.find((event) => new Date(event.date).getTime() >= Date.now());
+  const featuredEvent = upcomingEvent || publicEvents[0];
+
+  if (featuredEvent) {
+    const formattedDate = new Intl.DateTimeFormat(state.language === "en" ? "en-US" : "fr-FR", {
+      dateStyle: "long",
+      timeStyle: "short"
+    }).format(new Date(featuredEvent.date));
+    const eventLabel = upcomingEvent ? "Prochain événement" : "Dernier événement";
+    eventRoot.innerHTML = `
+      <article class="home-featured-event">
+        <button class="home-featured-visual" type="button" data-flyer-id="${featuredEvent.id}" aria-label="Agrandir la fiche de ${featuredEvent.title}">
+          <img src="${resolveAssetPath(featuredEvent.flyer)}" alt="${featuredEvent.flyerAlt || featuredEvent.title}" loading="lazy" />
+          <span>${iconSvg("preview")} Agrandir</span>
+        </button>
+        <div class="home-featured-copy">
+          <span class="home-live-status">${eventLabel}</span>
+          <p class="eyebrow">${featuredEvent.type}</p>
+          <h3>${featuredEvent.title}</h3>
+          <p class="home-featured-speaker">${featuredEvent.speaker || "Intervenant non renseigné"}</p>
+          <time datetime="${featuredEvent.date}">${formattedDate}</time>
+          <div class="home-featured-actions">
+            <button type="button" class="btn-secondary" data-flyer-id="${featuredEvent.id}">${iconSvg("preview")} Voir la fiche</button>
+            <a class="btn-primary" href="${route("pages/agenda.html")}">${iconSvg("events")} Agenda</a>
+          </div>
+        </div>
+      </article>
+    `;
+  } else {
+    eventRoot.innerHTML = `<p class="home-live-empty">Aucun événement publié pour le moment.</p>`;
+  }
+
+  const latestPosts = state.content.posts
+    .filter((post) => post.status === "published")
+    .sort((first, second) => new Date(second.publishedAt) - new Date(first.publishedAt))
+    .slice(0, 3);
+
+  postsRoot.innerHTML = latestPosts.length
+    ? latestPosts.map((post) => {
+        const publishedDate = new Intl.DateTimeFormat(state.language === "en" ? "en-US" : "fr-FR", {
+          dateStyle: "medium"
+        }).format(new Date(post.publishedAt));
+        return `
+          <article class="home-post-item">
+            <img src="${resolveAssetPath(post.cover || "./assets/edgard-petit.jpg")}" alt="${post.coverAlt || post.title}" loading="lazy" />
+            <div>
+              <div class="home-post-meta"><span>${post.category}</span><time datetime="${post.publishedAt}">${publishedDate}</time></div>
+              <h4>${post.title}</h4>
+              <button type="button" data-post-open="${post.id}">Lire l’article ${iconSvg("external")}</button>
+            </div>
+          </article>
+        `;
+      }).join("")
+    : `<p class="home-live-empty">Aucune publication disponible pour le moment.</p>`;
+}
+
 function setupFlyerLightbox() {
-  if (!document.querySelector("#events-grid")) return;
+  if (!document.querySelector("[data-flyer-id]")) return;
 
   const lightbox = document.createElement("div");
   lightbox.className = "flyer-lightbox hidden";
@@ -3765,6 +3827,7 @@ async function hydrate({ loadRemote = true } = {}) {
   setupGalleryFilters();
   renderBooks();
   renderEvents();
+  renderHomeHighlights();
   renderPosts();
   renderGallery();
   setupSiteIconography();

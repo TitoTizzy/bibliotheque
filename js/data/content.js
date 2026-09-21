@@ -2,6 +2,23 @@ export const books = [];
 
 export const events = [
   {
+    id: "intelligence-artificielle-2026",
+    type: "Conférence",
+    title: "L’intelligence artificielle : comprendre, communiquer, créer",
+    speaker: "Myrtho Charles",
+    description: "Une conférence d’introduction pour découvrir des outils simples permettant d’apprendre, de travailler plus efficacement et de contribuer à un meilleur avenir.",
+    date: "2026-09-27T15:00:00-04:00",
+    location: "Bibliothèque Edgard Petit, 390 avenue John Brown, Bourdon",
+    capacity: 100,
+    registered: 0,
+    basePrice: 0,
+    status: "published",
+    visibility: "public",
+    paymentRequired: false,
+    flyer: "./assets/events/intelligence-artificielle-septembre-2026.png",
+    flyerAlt: "Flyer de la conférence d’introduction à l’intelligence artificielle"
+  },
+  {
     id: "patrimoine-personnel-2024",
     type: "Séminaire",
     title: "Découvrez votre patrimoine personnel",
