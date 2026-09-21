@@ -47,6 +47,14 @@ function route(path = "") {
   return fromRoot(path);
 }
 
+function normalizeSearchValue(value = "") {
+  return String(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
 const siteIconPaths = {
   home: '<path d="M4 10.8 12 4l8 6.8V20a1 1 0 0 1-1 1h-5v-5h-4v5H5a1 1 0 0 1-1-1v-9.2Z"/><path d="M9.5 21v-6h5v6"/>',
   institution: '<path d="M5 10.5 12 6l7 4.5"/><path d="M6 10.5v8.5h12v-8.5"/><path d="M9 19v-5h6v5"/><path d="M10 6V3.5h4V6"/>',
@@ -194,6 +202,7 @@ function mapEvent(row) {
     id: row.id,
     type: row.event_type || row.type || "Conférence",
     title: row.title || "Événement",
+    speaker: row.speaker || row.presenter || row.intervenant || "Intervenant non renseigné",
     description: row.description || "",
     date: row.event_date || row.date,
     location: row.location || "Bibliothèque Edgard Petit",
@@ -336,7 +345,11 @@ async function loadSupabaseContent() {
     }
 
     if (!eventsResponse.error && eventsResponse.data?.length) {
-      state.content.events = eventsResponse.data.map(mapEvent);
+      const curatedTitles = new Set(fallbackEvents.map((event) => normalizeSearchValue(event.title)));
+      const remoteEvents = eventsResponse.data
+        .map(mapEvent)
+        .filter((event) => !curatedTitles.has(normalizeSearchValue(event.title)));
+      state.content.events = [...fallbackEvents, ...remoteEvents];
     }
 
     if (!postsResponse.error && postsResponse.data?.length) {
@@ -677,16 +690,26 @@ function setupFilters() {
   renderOptions(document.querySelector("#category-filter"), categories);
 }
 
+function sortEventsForDisplay(events) {
+  const now = Date.now();
+  return [...events].sort((first, second) => {
+    const firstTime = new Date(first.date).getTime();
+    const secondTime = new Date(second.date).getTime();
+    const firstIsFuture = firstTime >= now;
+    const secondIsFuture = secondTime >= now;
+    if (firstIsFuture !== secondIsFuture) return firstIsFuture ? -1 : 1;
+    return firstIsFuture ? firstTime - secondTime : secondTime - firstTime;
+  });
+}
+
 function getPublicEvents() {
-  return state.content.events
-    .filter((event) => event.status === "published" && event.visibility === "public")
-    .sort((first, second) => new Date(first.date) - new Date(second.date));
+  return sortEventsForDisplay(
+    state.content.events.filter((event) => event.status === "published" && event.visibility === "public")
+  );
 }
 
 function getPublishedEvents() {
-  return state.content.events
-    .filter((event) => event.status === "published")
-    .sort((first, second) => new Date(first.date) - new Date(second.date));
+  return sortEventsForDisplay(state.content.events.filter((event) => event.status === "published"));
 }
 
 function getPublicEventShowcase() {
@@ -721,7 +744,7 @@ function getPublicEventShowcase() {
 }
 
 function getEventSourceEvents() {
-  return hasPrivateAccess() ? getPublishedEvents() : getPublicEventShowcase();
+  return hasPrivateAccess() ? getPublishedEvents() : getPublicEvents();
 }
 
 function setupEventFilters() {
@@ -1048,7 +1071,7 @@ function getFilteredEvents() {
   const priceFilter = document.querySelector("#event-price-filter")?.value || "";
 
   return getEventSourceEvents().filter((event) => {
-    const haystack = `${event.title} ${event.description} ${event.location} ${event.type}`.toLowerCase();
+    const haystack = `${event.title} ${event.speaker || ""} ${event.description} ${event.location} ${event.type}`.toLowerCase();
     const matchesPrice =
       !priceFilter ||
       (priceFilter === "free" && event.basePrice === 0) ||
@@ -1139,29 +1162,12 @@ function renderEvents() {
         timeStyle: "short"
       }).format(new Date(event.date));
       const price = event.basePrice === 0 ? state.dictionary.free : formatCurrency(event.basePrice);
-      const remainingSeats = Math.max(event.capacity - event.registered, 0);
-      const seatStatus = remainingSeats <= 5 ? "warning" : "success";
+      const hasEnded = new Date(event.date).getTime() < Date.now();
       const registerHref = hasPrivateAccess() ? route("adherent/index.html#event-registration") : route("auth/login.html?next=adherent");
       const registerLabel = hasPrivateAccess() ? state.dictionary.register : "Connexion pour s'inscrire";
-
-      return `
-        <article class="event-card">
-          <button class="event-flyer-button" type="button" data-flyer-id="${event.id}" aria-label="Voir le flyer">
-            <img class="event-flyer" src="${resolveAssetPath(event.flyer || "./assets/edgard-petit.jpg")}" alt="${event.flyerAlt || event.title}" loading="lazy" />
-            <span>Voir le flyer</span>
-          </button>
-          <div class="event-card-top">
-            <span class="badge">${event.type}</span>
-            <span class="status-pill ${seatStatus}">${remainingSeats} places restantes</span>
-          </div>
-          <h3 class="mt-4 text-xl">${event.title}</h3>
-          <p>${event.description}</p>
-          <dl class="event-meta">
-            <div><dt>Date</dt><dd>${date}</dd></div>
-            <div><dt>Lieu</dt><dd>${event.location}</dd></div>
-            <div><dt>Capacité</dt><dd>${event.registered}/${event.capacity} inscrits</dd></div>
-          </dl>
-          <div class="event-price">${price}</div>
+      const registration = hasEnded
+        ? `<span class="event-archive-label">Événement passé</span>`
+        : `
           <label class="field mt-5">
             <span>${state.dictionary.memberCode}</span>
             <input data-event-code="${event.id}" type="text" placeholder="Votre code adhérent" autocomplete="off" />
@@ -1171,6 +1177,28 @@ function renderEvents() {
           </div>
           <p class="mt-4 text-xs leading-5 text-slate-500">${event.paymentRequired ? state.dictionary.paymentInstructions : "Inscription gratuite, confirmation dans l'espace adhérent."}</p>
           <a class="btn-primary mt-auto" href="${registerHref}">${registerLabel}</a>
+        `;
+
+      return `
+        <article class="event-card">
+          <button class="event-flyer-button" type="button" data-flyer-id="${event.id}" aria-label="Ouvrir la fiche de ${event.title}">
+            <img class="event-flyer" src="${resolveAssetPath(event.flyer || "./assets/edgard-petit.jpg")}" alt="${event.flyerAlt || event.title}" loading="lazy" />
+            <span>${iconSvg("preview")} Agrandir</span>
+          </button>
+          <div class="event-card-top">
+            <span class="badge">${event.type}</span>
+            ${hasEnded ? `<span class="status-pill">Archives</span>` : `<span class="status-pill success">À venir</span>`}
+          </div>
+          <h3 class="mt-4 text-xl">${event.title}</h3>
+          <dl class="event-meta">
+            <div><dt>Date</dt><dd>${date}</dd></div>
+            <div><dt>Intervenant</dt><dd>${event.speaker || "Intervenant non renseigné"}</dd></div>
+            <div><dt>Lieu</dt><dd>${event.location}</dd></div>
+          </dl>
+          <button class="event-detail-button" type="button" data-flyer-id="${event.id}">
+            ${iconSvg("preview")} Voir la fiche
+          </button>
+          ${registration}
         </article>
       `;
     })
@@ -1211,8 +1239,20 @@ function setupFlyerLightbox() {
           <button type="button" data-flyer-close aria-label="Fermer">×</button>
         </div>
       </div>
-      <div class="flyer-stage" data-flyer-stage>
-        <img src="" alt="" data-flyer-image />
+      <div class="event-detail-layout">
+        <div class="flyer-stage" data-flyer-stage>
+          <img src="" alt="" data-flyer-image />
+        </div>
+        <aside class="event-detail-copy">
+          <span class="badge" data-flyer-type></span>
+          <h2 data-flyer-heading></h2>
+          <p data-flyer-description></p>
+          <dl class="event-detail-meta">
+            <div><dt>Intervenant</dt><dd data-flyer-speaker></dd></div>
+            <div><dt>Date</dt><dd data-flyer-date></dd></div>
+            <div><dt>Lieu</dt><dd data-flyer-location></dd></div>
+          </dl>
+        </aside>
       </div>
     </div>
   `;
@@ -1223,6 +1263,12 @@ function setupFlyerLightbox() {
   const download = lightbox.querySelector("[data-flyer-download]");
   const resetButton = lightbox.querySelector("[data-flyer-reset]");
   const stage = lightbox.querySelector("[data-flyer-stage]");
+  const type = lightbox.querySelector("[data-flyer-type]");
+  const heading = lightbox.querySelector("[data-flyer-heading]");
+  const description = lightbox.querySelector("[data-flyer-description]");
+  const speaker = lightbox.querySelector("[data-flyer-speaker]");
+  const eventDate = lightbox.querySelector("[data-flyer-date]");
+  const location = lightbox.querySelector("[data-flyer-location]");
   let zoom = 1;
   let baseImageWidth = 0;
 
@@ -1275,6 +1321,15 @@ function setupFlyerLightbox() {
 
     const flyer = resolveAssetPath(selectedEvent.flyer || "./assets/edgard-petit.jpg");
     title.textContent = selectedEvent.title;
+    type.textContent = selectedEvent.type;
+    heading.textContent = selectedEvent.title;
+    description.textContent = selectedEvent.description || "";
+    speaker.textContent = selectedEvent.speaker || "Intervenant non renseigné";
+    eventDate.textContent = new Intl.DateTimeFormat(state.language === "en" ? "en-US" : "fr-FR", {
+      dateStyle: "full",
+      timeStyle: "short"
+    }).format(new Date(selectedEvent.date));
+    location.textContent = selectedEvent.location;
     const prepareImageZoom = () => {
       image.removeAttribute("style");
       baseImageWidth = image.getBoundingClientRect().width;
