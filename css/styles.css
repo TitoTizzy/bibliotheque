@@ -5388,6 +5388,71 @@ main > section:not(.hero-band):not(.admin-command-bar):not(.admin-kpi-grid):not(
   color: #27445f;
 }
 
+/* Contrast rules for light content surfaces */
+.home-live-section .home-live-shell .home-live-heading .section-title,
+.home-live-section .home-live-shell .home-column-heading h3 {
+  color: #071a36;
+  text-shadow: none;
+}
+
+.home-live-section .home-live-shell .home-live-heading > p,
+.home-live-section .home-live-shell .home-latest-publications > p {
+  color: #36546f;
+}
+
+.home-live-section .home-live-shell :where(.home-live-heading, .home-column-heading) .eyebrow {
+  color: #075ea8;
+}
+
+.home-live-section .home-column-heading > a {
+  color: #075ea8;
+  text-decoration-color: #35bfe8;
+}
+
+.home-featured-visual > span {
+  background: #071f49;
+  border: 1px solid #67dcff;
+  color: #ffffff;
+}
+
+.gallery-portal .portal-link {
+  color: #ffffff;
+}
+
+body[data-page="galerie"] main > section.mx-auto .gallery-albums-head h2,
+body[data-page="galerie"] main > section.mx-auto .gallery-current-album h2,
+body[data-page="institution"] main > section.mx-auto > div > div > .section-title,
+body[data-page="institution"] .institution-values-section .section-title {
+  color: #ffffff;
+  text-shadow: 0 2px 18px rgba(0, 8, 28, 0.34);
+}
+
+body[data-page="galerie"] main > section.mx-auto > .gallery-albums-head .eyebrow,
+body[data-page="institution"] main > section.mx-auto > div > div > .eyebrow,
+body[data-page="institution"] .institution-values-section .eyebrow {
+  color: #62ddff;
+}
+
+body[data-page="galerie"] #gallery-filters {
+  color: #102a43;
+}
+
+body[data-page="galerie"] #gallery-filters .field,
+body[data-page="galerie"] #gallery-filters .field > span {
+  color: #173a57;
+}
+
+body[data-page="institution"] .institution-values-section {
+  background: rgba(5, 29, 68, 0.54);
+  border-block: 1px solid rgba(91, 201, 255, 0.28);
+}
+
+body[data-page="institution"] .institution-hero-card .eyebrow,
+body[data-page="institution"] .institution-cta .eyebrow,
+body[data-page="institution"] .education-focus .eyebrow {
+  color: #075ea8;
+}
+
 .home-featured-event,
 .home-latest-publications,
 .home-post-item,
